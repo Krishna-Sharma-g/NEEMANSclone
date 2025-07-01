@@ -1,0 +1,182 @@
+.product-view {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.product-images {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.product-images img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.product-details {
+  flex: 1;
+  padding: 20px;
+}
+
+.product-details h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.product-details h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.product-details h3 {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.product-details .discount {
+  color: red;
+  font-weight: bold;
+}
+
+.product-details .tax-info {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.product-details .add-to-cart,
+.product-details .buy-now {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.product-details .buy-now {
+  background-color: #28a745;
+}
+
+.product-details .add-to-cart:hover,
+.product-details .buy-now:hover {
+  opacity: 0.9;
+}
+
+.product-details .emi-info {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 10px;
+}
+
+.product-details ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.product-details ul li {
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.product-details .sizes {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.product-details .size-button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.product-details .size-button:hover {
+  background-color: #f8f9fa;
+}
+
+.product-details h4 {
+  margin-top: 20px;
+  font-size: 1.2rem;
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Add spacing between elements */
+}
+
+.price-section .price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333; /* Keep the price prominent */
+}
+
+.price-section .mrp {
+  font-size: 1rem;
+  color: lightgrey; /* Light grey for MRP */
+}
+
+.price-section .mrp .strikethrough {
+  text-decoration: line-through;
+}
+
+.price-section .discount {
+  font-size: 1rem;
+  color: green; /* Green color for discount */
+  font-weight: bold;
+}
+
+.emi{
+    background: #f1eadf !important;
+    border-radius: 0;
+    width: 100% !important;
+    max-width: 100%;
+    border: 1.248px solid #bd9966 !important;
+    letter-spacing: normal;
+    padding: 12px !important;
+    position: relative;
+    margin: 5px 0 8px !important;
+}
+
+.upi-img{
+  width: 35px;
+  margin: 1px 6px -4px 4px !important
+}
+
+.emi-text-1{
+  color: #000;
+    margin-bottom: 0;
+    vertical-align: unset !important;
+    display: unset !important;
+    font-weight: 700;
+}
+.emi-text-2{
+  color: #000;
+  font-weight: 700 !important;
+  line-height: normal;
+  margin-left: 4px;
+  margin-top: 0;
+  margin-bottom: -7px !important;
+  display: inline-flex;
+  margin-right:4px;
+}
+.emi-text-3{
+  content: "month";
+    margin-right: 0;
+    font-weight: 700;
+    margin-left: -3px;
+    font-size: 15.5px;
+}
+
+.emi-slogan{
+  color: #888;
+}
