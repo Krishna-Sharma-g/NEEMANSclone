@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import './CollectionPage.css';
 
-function Collections({ handle }) {
+function Collections() {
+  const { handle } = useParams();
   // Product data
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
