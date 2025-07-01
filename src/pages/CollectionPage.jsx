@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import './CollectionPage.css';
 
 function Collections() {
@@ -176,7 +176,7 @@ function Collections() {
         </div>
         <div className="products-grid">
           {products.map(product => (
-            <div key={product.id} className="product-card">
+            <Link to={`/product/${product.handle}`} key={product.id} className="product-card">
               <img className="product-image" src={product.images[0]?.src} alt={product.title} />
               <h4 className="product-title">{product.title}</h4>
               <p className="product-price">
@@ -190,7 +190,7 @@ function Collections() {
                   {Math.round(((parseFloat(product.variants[0].compare_at_price) - parseFloat(product.variants[0].price)) / parseFloat(product.variants[0].compare_at_price)) * 100)}% OFF
                 </span>
               )}
-            </div>
+            </Link>
           ))}
         </div>
       </main>

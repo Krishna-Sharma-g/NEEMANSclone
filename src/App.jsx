@@ -12,6 +12,7 @@ import ReviewimageSlider from './components/reviewimageslider';
 import BestSeller from './components/BestSeller';
 import VideoSlider from './components/VideoSlider';
 import CollectionPage from './pages/CollectionPage';
+import ProductView from './pages/ProductView';
 
 function HomePage() {
   return (
@@ -36,6 +37,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/collections/:handle" element={<CollectionPage />} />
+      <Route path="/product/:productHandle" element={<ProductView />} />
     </Routes>
   );
 }
