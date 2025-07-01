@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import "../styles/ProductView.css";
 
 const ProductView = () => {
-  const { productName } = useParams();
+  const { productHandle } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const ProductView = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`https://neemans.com/products/begin-walk-glide.json`);
+        const response = await fetch(`https://neemans.com/products/${productHandle}.json`);
         if (!response.ok) {
           throw new Error("Failed to fetch product data");
         }
@@ -39,7 +39,7 @@ const ProductView = () => {
         }
 
     fetchProduct();
-  }, [productName]);
+  }, [productHandle]);
 
   if (loading) {
     return <div>Loading...</div>;
