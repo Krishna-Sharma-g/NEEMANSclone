@@ -54,6 +54,7 @@ const ProductSlider = () => {
 
           return {
             id: p.id,
+            handle: p.handle,
             name: p.title,
             image: p.images[0]?.src,
             price: price,
@@ -85,7 +86,7 @@ const ProductSlider = () => {
       <div className="product-slider-container">
         <div className="product-slider">
           {products.map((product) => (
-            <div className="product-card" key={product.id}>
+            <Link to={`/product/${product.handle}`} key={product.id} className="product-card">
               {product.isNew && <div className="new-badge">NEW</div>}
               <img src={product.image} alt={product.name} className="product-image" />
               <h3 className="product-name">{product.name}</h3>
@@ -95,7 +96,7 @@ const ProductSlider = () => {
                 <span className="discount">{product.discount}</span>
               </div>
               <button className="add-to-cart-btn">ADD TO CART</button>
-            </div>
+            </Link>
           ))}
 
         </div>
