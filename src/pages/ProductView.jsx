@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import "../styles/ProductView.css";
 import { useCart } from '../context/CartContext';
+import CartSidebar from '../components/CartSidebar';
 
 const ProductView = () => {
   const { productHandle } = useParams();
@@ -10,7 +11,8 @@ const ProductView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [allproducts, setAllProducts] = useState([]);
-  const { addToCart } = useCart();
+  const { addToCart, isInCart, getItemQuantity, updateQuantity, removeFromCart } = useCart();
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -62,8 +64,19 @@ const ProductView = () => {
     variant_id: product.variants[0].id
   };
   addToCart(productToAdd);
+  setShowCartSidebar(true);
 };
 
+const handleQuantityChange = (newQuantity) => {
+  if (newQuantity <= 0) {
+    removeFromCart(product.id, product.variants[0].id);
+  } else {
+    updateQuantity(product.id, newQuantity, product.variants[0].id);
+  }
+};
+
+const currentQuantity = getItemQuantity(product.id, product.variants[0].id);
+const productInCart = isInCart(product.id, product.variants[0].id);
   return (
     <div className="App">
       <Navbar />
@@ -114,8 +127,17 @@ const ProductView = () => {
               </span>
 
           </div>
+          {!productInCart ? (
           <button className="add-to-cart" onClick={handleAddToCart}>ADD TO CART</button>
-          <button className="buy-now">BUY NOW</button>
+          ) : (
+          <div className="quantity-controls-product">
+          <button onClick={() => handleQuantityChange(currentQuantity - 1)}>-</button>
+          <span>{currentQuantity}</span>
+          <button onClick={() => handleQuantityChange(currentQuantity + 1)}>+</button>
+          </div>
+)}
+<button className="buy-now">BUY NOW</button>
+
           <p className="emi-info">Get this for as low as Rs. 2609 with these offers.</p>
           <h4>Product Details:</h4>
           <ul>
@@ -129,6 +151,9 @@ const ProductView = () => {
           </ul>
         </div>
       </div>
+      <CartSidebar 
+      isOpen={showCartSidebar} 
+      onClose={() => setShowCartSidebar(false)} />
     </div>
   );
 };

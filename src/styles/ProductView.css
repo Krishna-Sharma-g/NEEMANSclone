@@ -180,3 +180,31 @@
 .emi-slogan{
   color: #888;
 }
+
+.quantity-controls-product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: fit-content;
+}
+
+.quantity-controls-product button {
+  size: 0.3ch;
+  color: rgb(7, 7, 7);
+  border: none;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-controls-product span {
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}

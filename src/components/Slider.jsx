@@ -15,7 +15,7 @@ const slides = [
     href: '#'
   },
   {
-    image: 'https://neemans.com/cdn/shop/files/1920X800_Desktop_Banner.jpg?v=1750788112&width=1500',
+    image: 'https://neemans.com/cdn/shop/files/ELT_-_Desktop_Banner.jpg?v=1751290410&width=1500',
     href: '#'
   },
   {
