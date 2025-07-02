@@ -13,6 +13,8 @@ import BestSeller from './components/BestSeller';
 import VideoSlider from './components/VideoSlider';
 import CollectionPage from './pages/CollectionPage';
 import ProductView from './pages/ProductView';
+import Cart from './pages/Cart';
+import { CartProvider } from './context/CartContext';
 
 function HomePage() {
   return (
@@ -34,12 +36,18 @@ function HomePage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/collections/:handle" element={<CollectionPage />} />
-      <Route path="/product/:productHandle" element={<ProductView />} />
-    </Routes>
+    <CartProvider>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/collections/:handle" element={<CollectionPage />} />
+          <Route path="/product/:productHandle" element={<ProductView />} />
+        </Routes>
+      </div>
+    </CartProvider>
   );
 }
+
 
 export default App;

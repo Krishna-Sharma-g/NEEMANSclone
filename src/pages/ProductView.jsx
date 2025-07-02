@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "../styles/ProductView.css";
+import { useCart } from '../context/CartContext';
 
 const ProductView = () => {
   const { productHandle } = useParams();
@@ -8,6 +9,7 @@ const ProductView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [allproducts, setAllProducts] = useState([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -48,6 +50,18 @@ const ProductView = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  const handleAddToCart = () => {
+  const productToAdd = {
+    id: product.id,
+    title: product.title,
+    price: product.variants[0].price,
+    image: product.images[0]?.src,
+    variant_title: product.title.split(" : ")[1] || 'Default',
+    variant_id: product.variants[0].id
+  };
+  addToCart(productToAdd);
+};
 
   return (
     <div className="product-view">
@@ -97,7 +111,7 @@ const ProductView = () => {
             </span>
 
         </div>
-        <button className="add-to-cart">ADD TO CART</button>
+        <button className="add-to-cart" onClick={handleAddToCart}>ADD TO CART</button>
         <button className="buy-now">BUY NOW</button>
         <p className="emi-info">Get this for as low as Rs. 2609 with these offers.</p>
         <h4>Product Details:</h4>

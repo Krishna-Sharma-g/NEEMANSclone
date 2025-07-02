@@ -12,6 +12,53 @@
   border-bottom: 1px solid #ddd;
 }
 
+.cart-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  text-decoration: none;
+}
+
+.cart-button:hover {
+  opacity: 0.8;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff4444;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+}
+
+/* Make sure nav-actions items are properly aligned */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-actions a,
+.nav-actions button {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
 .promo-message {
   flex-grow: 1;
   text-align: center;
