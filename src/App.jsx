@@ -8,7 +8,7 @@ import CollectionCards from './components/CollectionCards';
 import ProductSlider from './components/ProductSlider';
 import ReviewSlider from './components/ReviewSlider';
 import TrendingSlider from './components/TrendingSlider';
-import ReviewimageSlider from './components/reviewimageslider';
+import ReviewImageSlider from './components/reviewimageslider';
 import BestSeller from './components/BestSeller';
 import VideoSlider from './components/VideoSlider';
 import CollectionPage from './pages/CollectionPage';
@@ -27,7 +27,7 @@ function HomePage() {
       <CategoryCards />
       <TrendingSlider />
       <ReviewSlider />
-      <ReviewimageSlider />
+      <ReviewImageSlider />
       <BestSeller />
       <VideoSlider />
     </div>

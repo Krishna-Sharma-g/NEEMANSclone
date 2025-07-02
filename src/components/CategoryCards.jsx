@@ -11,13 +11,13 @@ const categories = [
   },
   {
     label: 'SLIP-ONS',
-    image: 'https://neemans.com/cdn/shop/files/Frame_39231_9d230ddc-a0bd-445e-89e8-c64c2c47d688.png?v=1712729212&width=400',
+    image: 'https://neemans.com/cdn/shop/files/Frame_39231_9d2e-445e-89e8-c64c2c47d688.png?v=1712729212&width=400',
     handle: 'slip-ons',
     bgtext: 'SLIP ONS',
   },
   {
     label: 'LOAFERS',
-    image: 'https://neemans.com/cdn/shop/files/Frame_39233_d9666860-0b4a-4988-a4f6-0c508f84a258.png?v=1712583768&width=400',
+    image: 'https://neemans.com/cdn/shop/files/Frame_39233_d96e-4988-a4f6-0c508f84a258.png?v=1712583768&width=400',
     handle: 'loafers',
     bgtext: 'LOAFERS',
   },
@@ -30,28 +30,28 @@ const categories = [
   {
     label: 'FLATS',
     image: 'https://neemans.com/cdn/shop/files/Flats_New.png?v=1718002963&width=400',
-    handle: 'flats-collection',
+    handle: 'flats',
     bgtext: 'FLATS',
   },
   {
-    label: 'FLIP-FLOPS',
+    label: 'SANDALS',
     image: 'https://neemans.com/cdn/shop/files/Frame_39234_850d0a30-849f-46cd-ade8-e812eeadffda.png?v=1712583768&width=400',
-    handle: 'flip-flops-collection',
-    bgtext: 'FLIPS',
+    handle: 'sandals',
+    bgtext: 'SANDALS',
   },
   {
     label: 'SLIDES',
     image: 'https://neemans.com/cdn/shop/files/Slides.png?v=1730268638&width=400',
-    handle: 'slides-collection',
+    handle: 'slides',
     bgtext: 'SLIDES',
   },
   {
-    label: 'SANDALS',
+    label: 'WALKING SHOES',
     image: 'https://neemans.com/cdn/shop/files/Frame_39236_344486a2-12a4-4418-9470-9dba384503fa.png?v=1712583768&width=400',
-    handle: 'sandals-collection',
-    bgtext: 'SANDALS',
+    handle: 'walking-shoes',
+    bgtext: 'WALKING',
   },
-]
+];
 
 const CategoryCards = () => (
   <section className="category-cards-section">
