@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import './CollectionPage.css';
 
 function Collections() {
@@ -106,94 +107,97 @@ function Collections() {
   ];
 
   return (
-    <div className="collection-main">
-      <aside className="collection-sidebar">
-        <h3>Sort & Filters</h3>
-        <div className="filter-group">
-          <label>Gender</label>
-          <select value={gender} onChange={e => setGender(e.target.value)}>
-            <option value="">All</option>
-            {genderOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label>Product Type</label>
-          <select value={productType} onChange={e => setProductType(e.target.value)}>
-            <option value="">All</option>
-            {productTypeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label>Collection</label>
-          <select value={collection} onChange={e => setCollection(e.target.value)}>
-            <option value="">All</option>
-            {collectionOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label>Color</label>
-          <select value={color} onChange={e => setColor(e.target.value)}>
-            <option value="">All</option>
-            {colorOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label>Size</label>
-          <select value={size} onChange={e => setSize(e.target.value)}>
-            <option value="">All</option>
-            {sizeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label>Price</label>
-          <div className="price-range">
-            <input type="number" min="0" max="5000" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} />
-            <span> - </span>
-            <input type="number" min="0" max="5000" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
-          </div>
-        </div>
-        <div className="filter-group">
-          <label>Discount</label>
-          <select value={discount} onChange={e => setDiscount(e.target.value)}>
-            <option value="">All</option>
-            {discountOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-          </select>
-        </div>
-      </aside>
-      <main className="collection-content">
-        <div className="collection-header">
-          <h3 className="collection-title">{title}</h3>
-          <div className="sort-by">
-            <label>Sort by: </label>
-            <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-              <option value="featured">Featured</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="title-asc">Name: A-Z</option>
-              <option value="title-desc">Name: Z-A</option>
+    <div className="App">
+      <Navbar />
+      <div className="collection-main">
+        <aside className="collection-sidebar">
+          <h3>Sort & Filters</h3>
+          <div className="filter-group">
+            <label>Gender</label>
+            <select value={gender} onChange={e => setGender(e.target.value)}>
+              <option value="">All</option>
+              {genderOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
             </select>
           </div>
-        </div>
-        <div className="products-grid">
-          {products.map(product => (
-            <Link to={`/product/${product.handle}`} key={product.id} className="product-card">
-              <img className="product-image" src={product.images[0]?.src} alt={product.title} />
-              <h4 className="product-title">{product.title}</h4>
-              <p className="product-price">
-                ₹{parseFloat(product.variants[0]?.price || product.price).toLocaleString()}
+          <div className="filter-group">
+            <label>Product Type</label>
+            <select value={productType} onChange={e => setProductType(e.target.value)}>
+              <option value="">All</option>
+              {productTypeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+          </div>
+          <div className="filter-group">
+            <label>Collection</label>
+            <select value={collection} onChange={e => setCollection(e.target.value)}>
+              <option value="">All</option>
+              {collectionOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+          </div>
+          <div className="filter-group">
+            <label>Color</label>
+            <select value={color} onChange={e => setColor(e.target.value)}>
+              <option value="">All</option>
+              {colorOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+          </div>
+          <div className="filter-group">
+            <label>Size</label>
+            <select value={size} onChange={e => setSize(e.target.value)}>
+              <option value="">All</option>
+              {sizeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+          </div>
+          <div className="filter-group">
+            <label>Price</label>
+            <div className="price-range">
+              <input type="number" min="0" max="5000" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} />
+              <span> - </span>
+              <input type="number" min="0" max="5000" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
+            </div>
+          </div>
+          <div className="filter-group">
+            <label>Discount</label>
+            <select value={discount} onChange={e => setDiscount(e.target.value)}>
+              <option value="">All</option>
+              {discountOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+            </select>
+          </div>
+        </aside>
+        <main className="collection-content">
+          <div className="collection-header">
+            <h3 className="collection-title">{title}</h3>
+            <div className="sort-by">
+              <label>Sort by: </label>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="title-asc">Name: A-Z</option>
+                <option value="title-desc">Name: Z-A</option>
+              </select>
+            </div>
+          </div>
+          <div className="products-grid">
+            {products.map(product => (
+              <Link to={`/product/${product.handle}`} key={product.id} className="product-card">
+                <img className="product-image" src={product.images[0]?.src} alt={product.title} />
+                <h4 className="product-title">{product.title}</h4>
+                <p className="product-price">
+                  ₹{parseFloat(product.variants[0]?.price || product.price).toLocaleString()}
+                  {product.variants[0]?.compare_at_price && parseFloat(product.variants[0].compare_at_price) > parseFloat(product.variants[0].price) && (
+                    <span className="product-compare">₹{parseFloat(product.variants[0].compare_at_price).toLocaleString()}</span>
+                  )}
+                </p>
                 {product.variants[0]?.compare_at_price && parseFloat(product.variants[0].compare_at_price) > parseFloat(product.variants[0].price) && (
-                  <span className="product-compare">₹{parseFloat(product.variants[0].compare_at_price).toLocaleString()}</span>
+                  <span className="product-discount">
+                    {Math.round(((parseFloat(product.variants[0].compare_at_price) - parseFloat(product.variants[0].price)) / parseFloat(product.variants[0].compare_at_price)) * 100)}% OFF
+                  </span>
                 )}
-              </p>
-              {product.variants[0]?.compare_at_price && parseFloat(product.variants[0].compare_at_price) > parseFloat(product.variants[0].price) && (
-                <span className="product-discount">
-                  {Math.round(((parseFloat(product.variants[0].compare_at_price) - parseFloat(product.variants[0].price)) / parseFloat(product.variants[0].compare_at_price)) * 100)}% OFF
-                </span>
-              )}
-            </Link>
-          ))}
-        </div>
-      </main>
+              </Link>
+            ))}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

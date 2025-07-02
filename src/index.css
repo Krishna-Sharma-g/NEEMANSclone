@@ -15,6 +15,12 @@ body {
   min-height: 100vh;
   line-height: 1.6;
 }
+
+/* Add padding when navbar is sticky to prevent content jump */
+body.navbar-sticky {
+  padding-top: 120px; /* Adjust based on your navbar height */
+}
+
 a {
   color: inherit;
   text-decoration: none;

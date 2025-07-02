@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Slider.css';
 
 const slides = [
@@ -22,33 +22,74 @@ const slides = [
     image: 'https://neemans.com/cdn/shop/files/1920X800_Desktop_Banner.jpg?v=1750788112&width=1500',
     href: '#'
   },
-
 ];
 
 const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    if (!isTransitioning) {
+      setIsTransitioning(true);
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      setTimeout(() => setIsTransitioning(false), 500);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    if (!isTransitioning) {
+      setIsTransitioning(true);
+      setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+      setTimeout(() => setIsTransitioning(false), 500);
+    }
   };
 
   const goToSlide = (slideIndex) => {
-    setCurrentSlide(slideIndex);
+    if (!isTransitioning && slideIndex !== currentSlide) {
+      setIsTransitioning(true);
+      setCurrentSlide(slideIndex);
+      setTimeout(() => setIsTransitioning(false), 500);
+    }
   };
 
+  // Auto-slide functionality
+  useEffect(() => {
+    if (isPaused) return;
+    
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [currentSlide, isTransitioning, isPaused]);
+
   return (
-    <div className="slider-container">
-      <div className="slide">
-        <a href={slides[currentSlide].href}>
-          <img src={slides[currentSlide].image} alt="Slider" />
-        </a>
+    <div 
+      className="slider-container"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div className="slides-wrapper">
+        {slides.map((slide, index) => (
+          <div 
+            key={index}
+            className={`slide ${index === currentSlide ? 'active' : ''}`}
+          >
+            <a href={slide.href}>
+              <img src={slide.image} alt={`Slide ${index + 1}`} />
+            </a>
+          </div>
+        ))}
       </div>
-      <button className="prev-btn" onClick={prevSlide}>&#10094;</button>
-      <button className="next-btn" onClick={nextSlide}>&#10095;</button>
+      
+      <button className="prev-btn" onClick={prevSlide} disabled={isTransitioning}>
+        &#10094;
+      </button>
+      <button className="next-btn" onClick={nextSlide} disabled={isTransitioning}>
+        &#10095;
+      </button>
+      
       <div className="pagination-dots">
         {slides.map((_, index) => (
           <span
