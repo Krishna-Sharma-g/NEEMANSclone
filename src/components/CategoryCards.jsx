@@ -27,7 +27,31 @@ const categories = [
     handle: 'oxfords-collection',
     bgtext: 'OXFORDS',
   },
-];
+  {
+    label: 'FLATS',
+    image: 'https://neemans.com/cdn/shop/files/Flats_New.png?v=1718002963&width=400',
+    handle: 'flats-collection',
+    bgtext: 'FLATS',
+  },
+  {
+    label: 'FLIP-FLOPS',
+    image: 'https://neemans.com/cdn/shop/files/Frame_39234_850d0a30-849f-46cd-ade8-e812eeadffda.png?v=1712583768&width=400',
+    handle: 'flip-flops-collection',
+    bgtext: 'FLIPS',
+  },
+  {
+    label: 'SLIDES',
+    image: 'https://neemans.com/cdn/shop/files/Slides.png?v=1730268638&width=400',
+    handle: 'slides-collection',
+    bgtext: 'SLIDES',
+  },
+  {
+    label: 'SANDALS',
+    image: 'https://neemans.com/cdn/shop/files/Frame_39236_344486a2-12a4-4418-9470-9dba384503fa.png?v=1712583768&width=400',
+    handle: 'sandals-collection',
+    bgtext: 'SANDALS',
+  },
+]
 
 const CategoryCards = () => (
   <section className="category-cards-section">
@@ -37,10 +61,6 @@ const CategoryCards = () => (
         <Link to={`/collections/${cat.handle}`} className="category-card" key={idx}>
           <div className="category-card-bgtext">{cat.bgtext}</div>
           <img src={cat.image} alt={cat.label} className="category-card-image" />
-          <div className="category-card-label-row">
-            <span className="category-card-label">{cat.label}</span>
-            <span className="category-card-arrow">→</span>
-          </div>
         </Link>
       ))}
     </div>
