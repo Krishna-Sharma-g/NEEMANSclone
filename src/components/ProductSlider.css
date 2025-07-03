@@ -27,19 +27,8 @@
 }
 
 .product-slider-container {
-  overflow-x: hidden; /* Already set to hidden to remove scrollbars */
+  overflow-x: auto;
   padding-bottom: 20px;
-}
-
-/* Hide scrollbars for all browsers in product slider */
-.product-slider-container,
-.product-slider {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-}
-.product-slider-container::-webkit-scrollbar,
-.product-slider::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
 }
 
 .product-slider {
@@ -174,21 +163,4 @@
 .category-card-arrow {
   font-size: 1.5rem;
   font-weight: bold;
-}
-
-.after-view-all-image-container {
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
-  position: relative;
-}
-
-.after-view-all-image-container img,
-.after-view-all-image {
-  width: 100vw;
-  max-width: 100vw;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
+} 

@@ -3,7 +3,6 @@
   background: #fff;
   transition: all 0.3s cubic-bezier(.4,0,.2,1);
   box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-  position: relative; /* <-- Add this line */
 }
 
 .header.sticky {
@@ -85,9 +84,6 @@
   align-items: center;
 }
 
-.nav-links a:hover, .nav-item > a:hover, .nav-item > span:hover {
-  color: #b9976f;
-}
 
 .nav-item .down-arrow {
   margin-left: 6px;
@@ -119,9 +115,6 @@
   transition: color 0.2s;
 }
 
-.nav-action:hover {
-  color: #b9976f;
-}
 
 .nav-action svg {
   font-size: 1.25em;
@@ -146,11 +139,6 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   transition: color 0.2s;
-}
-
-.cart-button:hover {
-  background: none;
-  color: #b9976f;
 }
 
 .cart-count {
@@ -182,10 +170,18 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.08);
   padding: 36px 0 32px 0;
   z-index: 1000;
-  opacity: 1; /* Always visible when rendered */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+}
+
+.header.menu-open-men .mega-menu,
+.header.menu-open-women .mega-menu {
+  opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+  pointer-events: auto;
 }
 
 .mega-menu-content {
@@ -202,7 +198,6 @@
 }
 
 .mega-menu-title {
-  color: #b9976f;
   font-weight: bold;
   text-decoration: none;
   font-size: 15px;
@@ -230,7 +225,6 @@
 }
 
 .mega-menu-column ul li a:hover {
-  color: #b9976f;
   text-decoration: underline;
 }
 
@@ -246,4 +240,5 @@
   .logo img { height: 28px; }
   .nav-links { gap: 6px; font-size: 0.98rem; }
   .nav-actions { gap: 6px; }
-}
+} 
+

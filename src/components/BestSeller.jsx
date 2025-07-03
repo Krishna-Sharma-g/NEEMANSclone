@@ -1,10 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import './TrendingSlider.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import CartSidebar from '../components/CartSidebar';
 
-const bestseller = ({ onViewAll }) => {
+const bestseller = () => {
   const [products, setProducts] = useState([]);
-  const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  const handleAddToCart = (e, product) => {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  setIsAddingToCart(true);
+  const productToAdd = {
+    id: product.id,
+    title: product.name,
+    price: product.price,
+    image: product.image,
+    variant_title: product.name.split(" : ")[1] || 'Default',
+    variant_id: product.id
+  };
+  addToCart(productToAdd);
+  setShowCartSidebar(true);
+  setTimeout(() => setIsAddingToCart(false), 500);
+};
 
   useEffect(() => {
     fetch('https://neemans.com/collections/best-selling-products/products.json')
@@ -36,16 +58,9 @@ const bestseller = ({ onViewAll }) => {
       });
   }, []);
 
-  const handleViewAll = () => {
-    const handle = "best-selling-products";
-    if (onViewAll) {
-      onViewAll(handle);
-    }
-    navigate(`/collections/${handle}`);
-  };
-
   return (
     <section className="product-slider-section">
+      
       <div className="slider-header">
         <h2 className="slider-title">Best Seller</h2>
         <div className="slider-nav">
@@ -53,6 +68,7 @@ const bestseller = ({ onViewAll }) => {
           <button className="nav-arrow next-arrow">&gt;</button>
         </div>
       </div>
+     
       <div className="product-slider-container">
         <div className="product-slider">
           {products.map((product) => (
@@ -65,25 +81,32 @@ const bestseller = ({ onViewAll }) => {
                 <span className="original-price">Rs. {product.originalPrice}</span>
                 <span className="discount">{product.discount}</span>
               </div>
-              <button className="add-to-cart-btn">ADD TO CART</button>
+              <button 
+              className="add-to-cart-btn" 
+              onClick={(e) => handleAddToCart(e, product)}
+              disabled={isAddingToCart || isInCart(product.id)}
+              >
+                {isInCart(product.id) ? 'IN CART' : (isAddingToCart ? 'ADDING...' : 'ADD TO CART')}
+                </button>
             </Link>
           ))}
+
         </div>
-      </div>
-      <div className="view-all-container">
-        <button className="view-all-btn" onClick={handleViewAll}>
-          VIEW ALL PRODUCTS <span className="arrow">&rarr;</span>
-        </button>
       </div>
       <br />
       <div className="after-view-all-image-container">
         <img src="assets/banner4.png" alt="Banner after View All Products" className="after-view-all-image" />
       </div>
-      <div className="after-view-all-image-container">
+       <div className="after-view-all-image-container">
         <img src="assets/banner5.png" alt="Banner after View All Products" className="after-view-all-image" />
       </div>
+      <CartSidebar 
+        isOpen={showCartSidebar} 
+        onClose={() => setShowCartSidebar(false)} 
+      />
     </section>
+    
   );
 };
 
-export default bestseller;
+export default bestseller; 

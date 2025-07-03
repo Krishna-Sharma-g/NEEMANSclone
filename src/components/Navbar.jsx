@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import { useCart } from '../context/CartContext';
@@ -44,13 +44,6 @@ const Navbar = () => {
   const { getCartItemsCount } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Track hover state for nav and mega menu
-  const [navHover, setNavHover] = useState(false);
-  const [megaMenuHover, setMegaMenuHover] = useState(false);
-
-  // Timer for delayed closing of mega menu
-  const closeMenuTimeout = useRef(null);
-
   useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
@@ -64,7 +57,7 @@ const Navbar = () => {
       // Make navbar sticky after scrolling 100px
       const shouldBeSticky = currentScrollY > 100;
       setIsSticky(shouldBeSticky);
-
+      
       // Add/remove body class for spacing
       if (shouldBeSticky) {
         document.body.classList.add('navbar-sticky');
@@ -98,17 +91,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Handle hover logic for dropdown
-  useEffect(() => {
-    // If neither nav nor mega menu is hovered, close the menu after a short delay
-    if (!navHover && !megaMenuHover) {
-      closeMenuTimeout.current = setTimeout(() => setActiveMenu(null), 120);
-    } else {
-      clearTimeout(closeMenuTimeout.current);
-    }
-    return () => clearTimeout(closeMenuTimeout.current);
-  }, [navHover, megaMenuHover]);
-
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
   };
@@ -119,7 +101,7 @@ const Navbar = () => {
 
   return (
     <>
-      <header className={`header ${isSticky ? 'sticky' : ''} ${!isVisible ? 'hidden' : ''}`}>
+      <header className={`header ${isSticky ? 'sticky' : ''} ${!isVisible ? 'hidden' : ''} ${activeMenu ? `menu-open-${activeMenu.toLowerCase()}` : ''}`}>
         <div className="top-bar">
           <div className="promo-message">
             <span>BUY 2, GET 7% OFF; BUY 3, GET 10% OFF</span>
@@ -130,10 +112,7 @@ const Navbar = () => {
             <span>HELP</span>
           </div>
         </div>
-        <div
-          className="main-nav-container"
-          // Remove onMouseLeave here, handle with hover state below
-        >
+        <div className="main-nav-container" onMouseLeave={() => setActiveMenu(null)}>
           <div className="main-nav">
             <div className="logo">
               <img src="/assets/logoimage.png" alt="NEEMAN'S" />
@@ -143,11 +122,8 @@ const Navbar = () => {
                 <div
                   key={link.label}
                   className="nav-item"
-                  onMouseEnter={() => {
-                    setActiveMenu(link.label);
-                    setNavHover(true);
-                  }}
-                  onMouseLeave={() => setNavHover(false)}
+                  onMouseEnter={() => setActiveMenu(link.label)}
+                  onMouseLeave={() => setActiveMenu(null)}
                 >
                   {link.to.startsWith('/collections/') ? (
                     <Link to={link.to}>{link.label}</Link>
@@ -179,13 +155,7 @@ const Navbar = () => {
             </div>
           </div>
           {activeMenu && menuData[activeMenu] && (
-            <div
-              className="mega-menu"
-              onMouseEnter={() => setMegaMenuHover(true)}
-              onMouseLeave={() => setMegaMenuHover(false)}
-              // Always render mega menu if activeMenu is set
-              style={{ pointerEvents: 'auto' }}
-            >
+            <div className="mega-menu" onMouseEnter={() => setActiveMenu(activeMenu)} onMouseLeave={() => setActiveMenu(null)}>
               <div className="mega-menu-content">
                 {menuData[activeMenu].map((column) => {
                   const columnHandle = column.handle || column.title.toLowerCase().replace(/\s+/g, '-');
@@ -211,7 +181,8 @@ const Navbar = () => {
                             linkLabel = String(link);
                             linkHandle = String(link).toLowerCase().replace(/\s+/g, '-');
                           }
-                          // Remove debug log
+                          // Debug: log the link and handle being used
+                          console.log('Mega menu link:', link, 'Handle used:', linkHandle);
                           return (
                             <li key={linkLabel}>
                               <Link
@@ -232,6 +203,7 @@ const Navbar = () => {
           )}
         </div>
       </header>
+      
       <CartSidebar isOpen={isCartOpen} onClose={closeCart} />
     </>
   );
