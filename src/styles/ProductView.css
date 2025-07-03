@@ -32,7 +32,7 @@
   width: 90px;
   height: 90px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 0px;
   cursor: pointer;
   border: 2px solid transparent;
   transition: border 0.2s, box-shadow 0.2s;
@@ -54,7 +54,7 @@
   padding: 0;
   margin: 0;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 0px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.10);
 }
 
@@ -154,7 +154,7 @@
   border: 1.5px solid #ddd;
   background-color: white;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 0px;
   font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -215,31 +215,38 @@
 /* Action Buttons */
 .action-buttons {
   display: flex;
-  gap: 18px;
-  margin: 32px 0 18px 0;
+  width: 100%;
+  gap: 15px;
+  
 }
 
 .add-to-cart,
 .buy-now {
   flex: 1;
-  padding: 16px 24px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  width: 100%;
+  border-radius: 0px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
+  border: 1px solid #000;
 }
 
 .add-to-cart {
-  background-color: #333;
-  color: white;
+  background-color: white;
+  color: black;
+  border-color: #000;
 }
 
 .add-to-cart:hover:not(:disabled) {
-  background-color: #555;
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
 }
 
 .add-to-cart:disabled {
@@ -249,12 +256,14 @@
 }
 
 .buy-now {
-  background-color: #ff6b35;
+  background-color: black;
   color: white;
 }
 
 .buy-now:hover:not(:disabled) {
-  background-color: #e55a2b;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
 }
 
 .buy-now:disabled {
@@ -436,4 +445,11 @@ html, body {
   background: transparent !important;
   outline: none;
   box-shadow: none;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #bbb;
+  margin: 10px 0;
+  width: 100%;
 }

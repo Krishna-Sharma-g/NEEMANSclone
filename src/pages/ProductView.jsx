@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import "../styles/ProductView.css";
 import { useCart } from '../context/CartContext';
@@ -25,8 +25,21 @@ const extractProductDetails = (bodyHtml) => {
   return details;
 };
 
+const extractBaseNameAndColor = (title) => {
+  // e.g., "Ease Walk Neo : Black" => { baseName: "Ease Walk Neo", color: "Black" }
+  const parts = title.split(":");
+  if (parts.length > 1) {
+    return {
+      baseName: parts.slice(0, -1).join(":").trim(),
+      color: parts[parts.length - 1].trim(),
+    };
+  }
+  return { baseName: title.trim(), color: "" };
+};
+
 const ProductView = () => {
   const { productHandle } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,6 +52,8 @@ const ProductView = () => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const VISIBLE_THUMBNAILS = 4;
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [colorVariants, setColorVariants] = useState([]);
+  const [allProductsLoaded, setAllProductsLoaded] = useState(false);
 
   const handleThumbnailScroll = (direction) => {
     if (!product.images) return;
@@ -77,26 +92,27 @@ const ProductView = () => {
         setLoading(false);
       }
     };
-    const handleBlink = (e) => {
-    const btn = e.currentTarget;
-    btn.classList.remove('blink');
-    void btn.offsetWidth;         
-    btn.classList.add('blink');
-};
-    const fetchAllProducts = async () => {
-        try {
-            const response = await fetch(`https://neemans.com/products.json`);
-            if (!response.ok) {
-            throw new Error("Failed to fetch all products data");
-            }
-            const data = await response.json();
-            setAllProducts(data.products);
-        } catch (err) {
-            console.error(err.message);
+
+    const fetchAllProductsPaginated = async () => {
+      let page = 1;
+      let fetched = [];
+      let hasMore = true;
+      while (hasMore) {
+        const res = await fetch(`https://neemans.com/collections/all-products/products.json?page=${page}`);
+        const data = await res.json();
+        if (!data.products || data.products.length === 0) {
+          hasMore = false;
+        } else {
+          fetched = [...fetched, ...data.products];
+          page += 1;
         }
-        }
+      }
+      setAllProducts(fetched);
+      setAllProductsLoaded(true);
+    };
 
     fetchProduct();
+    fetchAllProductsPaginated();
   }, [productHandle]);
 
   useEffect(() => {
@@ -104,6 +120,18 @@ const ProductView = () => {
       setSelectedVariant(product.variants[0]);
     }
   }, [product]);
+
+  useEffect(() => {
+    if (allproducts.length > 0 && product) {
+      const { baseName } = extractBaseNameAndColor(product.title);
+      // Find all products with the same base name
+      const variants = allproducts.filter(p => {
+        const { baseName: otherBase } = extractBaseNameAndColor(p.title);
+        return otherBase.toLowerCase() === baseName.toLowerCase();
+      });
+      setColorVariants(variants);
+    }
+  }, [allproducts, product]);
 
   if (loading || !product || !product.images || !product.variants) {
     return (
@@ -165,6 +193,8 @@ const ProductView = () => {
   const productInCart = isInCart(product.id, selectedVariant ? selectedVariant.id : undefined);
 
   console.log("Product variants:", product.variants);
+
+  const { baseName, color: currentColor } = extractBaseNameAndColor(product.title);
 
   return (
     <div className="App">
@@ -258,7 +288,39 @@ const ProductView = () => {
               </span>
             </div>
           </div>
+          <hr className="section-divider" />
 
+          
+
+          {/* Color Section */}
+          {colorVariants.length > 1 && (
+            <div className="color-selection" style={{ margin: '18px 0 18px 0' }}>
+              <div style={{ fontWeight: 600, marginBottom: 8 }}>Color: <span style={{ fontWeight: 700, color: '#222' }}>{currentColor}</span></div>
+              <div style={{ display: 'flex', gap: 12 }}>
+                {colorVariants.map(variant => {
+                  const { color } = extractBaseNameAndColor(variant.title);
+                  const isSelected = variant.handle === product.handle;
+                  return (
+                    <div
+                      key={variant.id}
+                      className={`color-swatch${isSelected ? ' selected' : ''}`}
+                      style={{ border: isSelected ? '2px solid #222' : '2px solid transparent', cursor: isSelected ? 'default' : 'pointer', background: '#fff', width: 52, height: 52, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 0, boxSizing: 'border-box' }}
+                      onClick={() => {
+                        if (!isSelected) navigate(`/product/${variant.handle}`);
+                      }}
+                      title={color}
+                    >
+                      <img
+                        src={variant.images[0]?.src}
+                        alt={color}
+                        style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 0, border: '1px solid #eee', opacity: isSelected ? 1 : 0.8, background: '#fff' }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {/* Size Selection */}
           <div className="size-selection">
             <h4>Select Size (UK) :</h4>
@@ -278,6 +340,7 @@ const ProductView = () => {
               ))}
             </div>
           </div>
+          <hr className="section-divider" />
           {/* Action Buttons */}
           <div className="action-buttons">
             <button 
@@ -291,7 +354,7 @@ const ProductView = () => {
               BUY NOW
             </button>
           </div>
-
+          <hr className="section-divider" />
           {/* Product Description and Details (dynamic) */}
           <div className="product-description-section">
             <h3 className="desc-title">DESCRIPTION</h3>
@@ -311,6 +374,7 @@ const ProductView = () => {
               </>
             )}
           </div>
+          <hr className="section-divider" />
         </div>
       </div>
       <CartSidebar 
