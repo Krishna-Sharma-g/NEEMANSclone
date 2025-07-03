@@ -29,19 +29,24 @@ function Collections() {
       let page = 1;
       let fetched = [];
       let hasMore = true;
-      while (hasMore) {
-        const res = await axios.get(
-          `https://neemans.com/collections/${handle}/products.json?page=${page}`
-        );
-        if (res.data.products.length === 0) {
-          hasMore = false;
-        } else {
-          fetched = [...fetched, ...res.data.products];
-          page += 1;
+      try {
+        while (hasMore) {
+          const res = await axios.get(
+            `https://neemans.com/collections/${handle}/products.json?page=${page}`
+          );
+          if (res.data.products.length === 0) {
+            hasMore = false;
+          } else {
+            fetched = [...fetched, ...res.data.products];
+            page += 1;
+          }
         }
+        setAllProducts(fetched);
+        setProducts(fetched);
+      } catch (err) {
+        setAllProducts([]);
+        setProducts([]);
       }
-      setAllProducts(fetched);
-      setProducts(fetched);
     };
     fetchAllProducts();
   }, [handle]);

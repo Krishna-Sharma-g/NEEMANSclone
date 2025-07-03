@@ -6,14 +6,14 @@ import CartSidebar from './CartSidebar';
 
 const menuData = {
   MEN: [
-    { title: 'SNEAKERS', handle: 'men-sneakers', links: [
-      { label: 'CASUAL', handle: 'men-casual' },
-      { label: 'CHUNKY', handle: 'men-chunky' },
-      { label: 'FORMAL', handle: 'men-formal' },
-      { label: 'RETRO', handle: 'men-retro' },
-      { label: 'SIGNATURE', handle: 'men-signature' },
-      { label: 'SPORTS', handle: 'men-sports' },
-      { label: 'WALKING', handle: 'men-walking' },
+    { title: 'SNEAKERS', handle: 'sneakers-for-men', links: [
+      { label: 'CASUAL', handle: 'casual-sneakers-for-men' },
+      { label: 'CHUNKY', handle: 'chunky-sneakers-for-men' },
+      { label: 'FORMAL', handle: 'formal-sneakers-for-men' },
+      { label: 'RETRO', handle: 'retro-sneakers-for-men' },
+      { label: 'SIGNATURE', handle: 'signature-sneakers-for-men' },
+      { label: 'SPORTS', handle: 'sports-sneakers-for-men' },
+      { label: 'WALKING', handle: 'walking-sneakers-for-men' },
     ]},
     { title: 'SLIP ONS', handle: 'men-slip-ons', links: ['CASUAL', 'CHUNKY', 'FORMAL', 'SIGNATURE', 'SPORTS', 'WALKING'] },
     { title: 'LOAFERS & OXFORDS', handle: 'men-loafers-oxfords', links: ['CASUAL', 'FORMAL'] },
@@ -30,11 +30,11 @@ const menuData = {
 };
 
 const navLinks = [
-  { label: 'NEW', to: '#' },
-  { label: 'MEN', to: '/collections/men' },
-  { label: 'WOMEN', to: '/collections/women' },
-  { label: 'ABOUT US', to: '#' },
-  { label: 'OFFERS', to: '#' },
+  { label: 'NEW', to: '#', dropdown: true },
+  { label: 'MEN', to: '/collections/men', dropdown: true },
+  { label: 'WOMEN', to: '/collections/women', dropdown: true },
+  { label: 'ABOUT US', to: '#', dropdown: true },
+  { label: 'OFFERS', to: '#', dropdown: true },
 ];
 
 const Navbar = () => {
@@ -115,7 +115,7 @@ const Navbar = () => {
         <div className="main-nav-container" onMouseLeave={() => setActiveMenu(null)}>
           <div className="main-nav">
             <div className="logo">
-              <img src="assets/logoimage.png" alt="NEEMAN'S" />
+              <img src="/assets/logoimage.png" alt="NEEMAN'S" />
             </div>
             <nav className="nav-links">
               {navLinks.map((link) => (
@@ -123,24 +123,34 @@ const Navbar = () => {
                   key={link.label}
                   className="nav-item"
                   onMouseEnter={() => setActiveMenu(link.label)}
+                  onMouseLeave={() => setActiveMenu(null)}
                 >
                   {link.to.startsWith('/collections/') ? (
                     <Link to={link.to}>{link.label}</Link>
                   ) : (
                     <a href={link.to}>{link.label}</a>
                   )}
+                  {link.dropdown && <span className="down-arrow">▼</span>}
                 </div>
               ))}
             </nav>
             <div className="nav-actions">
-              <a href="#">SEARCH</a>
-              <a href="#">FIND STORES</a>
-              <a href="#">LOGIN</a>
-              <button onClick={toggleCart} className="cart-button">
+              <a className="nav-action" href="#">
+                <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                SEARCH
+              </a>
+              <a className="nav-action" href="#">
+                <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21 10.5V21H3v-10.5l9-7 9 7z"/><path d="M9 21V12h6v9"/></svg>
+                FIND STORES
+              </a>
+              <a className="nav-action" href="#">
+                <svg width="22" height="22" fill="none" stroke="#b9976f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M16 16v-1a4 4 0 0 0-8 0v1"/></svg>
+                LOGIN
+              </a>
+              <button onClick={toggleCart} className="cart-button nav-action">
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                 CART
-                {getCartItemsCount() > 0 && (
-                  <span className="cart-count">{getCartItemsCount()}</span>
-                )}
+                <span className="cart-count">{getCartItemsCount()}</span>
               </button>
             </div>
           </div>
@@ -160,15 +170,19 @@ const Navbar = () => {
                       </Link>
                       <ul>
                         {column.links.map((link) => {
-                          // link can be a string or an object with label/handle
                           let linkLabel, linkHandle;
-                          if (typeof link === 'string') {
+                          if (typeof link === 'object' && link.handle) {
+                            linkLabel = link.label;
+                            linkHandle = link.handle;
+                          } else if (typeof link === 'string') {
                             linkLabel = link;
                             linkHandle = link.toLowerCase().replace(/\s+/g, '-');
                           } else {
-                            linkLabel = link.label;
-                            linkHandle = link.handle || link.label.toLowerCase().replace(/\s+/g, '-');
+                            linkLabel = String(link);
+                            linkHandle = String(link).toLowerCase().replace(/\s+/g, '-');
                           }
+                          // Debug: log the link and handle being used
+                          console.log('Mega menu link:', link, 'Handle used:', linkHandle);
                           return (
                             <li key={linkLabel}>
                               <Link

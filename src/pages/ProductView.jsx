@@ -3,8 +3,27 @@ import { useParams } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import "../styles/ProductView.css";
 import { useCart } from '../context/CartContext';
+import CartSidebar from '../components/CartSidebar';
 
-const VISIBLE_THUMBNAILS = 4;
+const extractProductDetails = (bodyHtml) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(bodyHtml, 'text/html');
+  const details = {};
+  const firstParagraph = doc.querySelector('p');
+  details.description = firstParagraph ? firstParagraph.textContent.trim() : '';
+  const listItems = doc.querySelectorAll('li');
+  const specifications = [];
+  listItems.forEach(item => {
+    const strongElement = item.querySelector('strong');
+    if (strongElement) {
+      const key = strongElement.textContent.replace(':', '').trim();
+      const value = item.textContent.replace(strongElement.textContent, '').trim();
+      specifications.push({ key, value });
+    }
+  });
+  details.specifications = specifications;
+  return details;
+};
 
 const ProductView = () => {
   const { productHandle } = useParams();
@@ -12,39 +31,30 @@ const ProductView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [allproducts, setAllProducts] = useState([]);
-  const [selectedVariant, setSelectedVariant] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const { addToCart, isInCart, getItemQuantity, updateQuantity, removeFromCart } = useCart();
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
   const [productDetails, setProductDetails] = useState({});
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [showFullDescription, setShowFullDescription] = useState(false);
-  const { addToCart } = useCart();
   const [thumbnailStart, setThumbnailStart] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const VISIBLE_THUMBNAILS = 4;
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
-  // Function to extract product details from body_html
-  const extractProductDetails = (bodyHtml) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(bodyHtml, 'text/html');
-    const details = {};
-    
-    // Extract the main description
-    const firstParagraph = doc.querySelector('p');
-    details.description = firstParagraph ? firstParagraph.textContent.trim() : '';
-    
-    // Extract specifications from the list
-    const listItems = doc.querySelectorAll('li');
-    const specifications = [];
-    
-    listItems.forEach(item => {
-      const strongElement = item.querySelector('strong');
-      if (strongElement) {
-        const key = strongElement.textContent.replace(':', '').trim();
-        const value = item.textContent.replace(strongElement.textContent, '').trim();
-        specifications.push({ key, value });
+  const handleThumbnailScroll = (direction) => {
+    if (!product.images) return;
+    if (direction === 'up') {
+      if (thumbnailStart === 0) {
+        setThumbnailStart(product.images.length - VISIBLE_THUMBNAILS);
+      } else {
+        setThumbnailStart(thumbnailStart - 1);
       }
-    });
-    
-    details.specifications = specifications;
-    return details;
+    } else if (direction === 'down') {
+      if (thumbnailStart >= product.images.length - VISIBLE_THUMBNAILS) {
+        setThumbnailStart(0);
+      } else {
+        setThumbnailStart(thumbnailStart + 1);
+      }
+    }
   };
 
   useEffect(() => {
@@ -56,7 +66,6 @@ const ProductView = () => {
         }
         const data = await response.json();
         setProduct(data.product);
-        setSelectedVariant(data.product.variants[0]);
         
         // Extract product details from body_html
         const extractedDetails = extractProductDetails(data.product.body_html);
@@ -85,7 +94,13 @@ const ProductView = () => {
     fetchProduct();
   }, [productHandle]);
 
-  if (loading) {
+  useEffect(() => {
+    if (product && product.variants && product.variants.length > 0) {
+      setSelectedVariant(product.variants[0]);
+    }
+  }, [product]);
+
+  if (loading || !product || !product.images || !product.variants) {
     return (
       <div className="App">
         <Navbar />
@@ -107,74 +122,44 @@ const ProductView = () => {
     );
   }
 
-  const handleVariantChange = (variant) => {
-    setSelectedVariant(variant);
-  };
-
   const handleImageClick = (index) => {
     setSelectedImage(index);
   };
 
-  const handleAddToCart = async () => {
-    if (!selectedVariant) return;
-    
+  const handleAddToCart = () => {
+    if (productInCart) return;
     setIsAddingToCart(true);
-    
-    try {
-      const productToAdd = {
-        id: product.id,
-        title: product.title,
-        price: selectedVariant.price,
-        image: product.images[0]?.src,
-        variant_title: selectedVariant.title,
-        variant_id: selectedVariant.id
-      };
-      
-      await addToCart(productToAdd);
-      
-      // Show success feedback (you can add a toast notification here)
-      console.log('Product added to cart successfully!');
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    } finally {
-      setIsAddingToCart(false);
-    }
-  };
-  
-  const calculateDiscount = () => {
-    if (!selectedVariant.compare_at_price) return 0;
-    return Math.floor(
-      ((selectedVariant.compare_at_price - selectedVariant.price) /
-        selectedVariant.compare_at_price) *
-        100
-    );
-  };
-  
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0
-    }).format(price);
+    const productToAdd = {
+      id: product.id,
+      title: product.title,
+      price: selectedVariant.price,
+      image: product.images[selectedImage]?.src,
+      variant_title: (
+        selectedVariant.title && selectedVariant.title.match(/\d+/)
+          ? `Size: ${selectedVariant.title.match(/\d+/)[0]}`
+          : (selectedVariant.title && selectedVariant.title.length > 0
+              ? `Size: ${selectedVariant.title}`
+              : `Size: ${selectedVariant.id}`)
+      ),
+      variant_id: selectedVariant.id
+    };
+    addToCart(productToAdd);
+    setShowCartSidebar(true);
+    setTimeout(() => setIsAddingToCart(false), 500); // Simulate feedback
   };
 
-  const handleThumbnailScroll = (direction) => {
-    if (direction === 'up') {
-      if (thumbnailStart === 0) {
-        // Loop to the end
-        setThumbnailStart(product.images.length - VISIBLE_THUMBNAILS);
-      } else {
-        setThumbnailStart(thumbnailStart - 1);
-      }
-    } else if (direction === 'down') {
-      if (thumbnailStart >= product.images.length - VISIBLE_THUMBNAILS) {
-        // Loop to the start
-        setThumbnailStart(0);
-      } else {
-        setThumbnailStart(thumbnailStart + 1);
-      }
+  const handleQuantityChange = (newQuantity) => {
+    if (newQuantity <= 0) {
+      removeFromCart(product.id, selectedVariant.id);
+    } else {
+      updateQuantity(product.id, newQuantity, selectedVariant.id);
     }
   };
+
+  const currentQuantity = getItemQuantity(product.id, selectedVariant ? selectedVariant.id : undefined);
+  const productInCart = isInCart(product.id, selectedVariant ? selectedVariant.id : undefined);
+
+  console.log("Product variants:", product.variants);
 
   return (
     <div className="App">
@@ -185,13 +170,14 @@ const ProductView = () => {
           <button
             className="carousel-arrow up"
             onClick={() => handleThumbnailScroll('up')}
+            disabled={!product.images || product.images.length === 0}
           >
             {/* Chevron Up SVG */}
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M5 12.5L10 7.5L15 12.5" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          {product.images.slice(thumbnailStart, thumbnailStart + VISIBLE_THUMBNAILS).map((image, index) => (
+          {product.images && product.images.slice(thumbnailStart, thumbnailStart + 4).map((image, index) => (
             <img
               key={thumbnailStart + index}
               src={image.src}
@@ -203,6 +189,7 @@ const ProductView = () => {
           <button
             className="carousel-arrow down"
             onClick={() => handleThumbnailScroll('down')}
+            disabled={!product.images || product.images.length === 0}
           >
             {/* Chevron Down SVG */}
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -213,11 +200,13 @@ const ProductView = () => {
 
         {/* Column 2: Main Image */}
         <div className="main-image">
-          <img
-            src={product.images[selectedImage]?.src}
-            alt={product.title}
-            className="main-product-image"
-          />
+          {product.images && product.images[selectedImage] && (
+            <img
+              src={product.images[selectedImage].src}
+              alt={product.title}
+              className="main-product-image"
+            />
+          )}
         </div>
 
         {/* Column 3: Product Details */}
@@ -228,8 +217,8 @@ const ProductView = () => {
           <h1>{product.title}</h1>
           
           <div className="price-section">
-            <span className="price">Rs. {selectedVariant.price}</span>
-            {selectedVariant.compare_at_price && (
+            <span className="price">Rs. {selectedVariant ? selectedVariant.price : ''}</span>
+            {selectedVariant && selectedVariant.compare_at_price && (
               <>
                 <span className="mrp">
                   <span> MRP </span>
@@ -255,7 +244,7 @@ const ProductView = () => {
             <div className="emi-text">
               <span className="emi-text-1">Pay</span>
               <b>₹</b>
-              <span className="emi-text-2">{Math.floor(selectedVariant.price/3)}</span>
+              <span className="emi-text-2">{selectedVariant ? Math.floor(selectedVariant.price/3) : ''}</span>
               <span className="emi-text-3">/month</span>
             </div>
             <div>
@@ -265,17 +254,21 @@ const ProductView = () => {
             </div>
           </div>
 
-{/* Size Selection */}
-<div className="size-selection">
+          {/* Size Selection */}
+          <div className="size-selection">
             <h4>Select Size (UK) :</h4>
             <div className="sizes">
               {product.variants.map((variant) => (
                 <button
                   key={variant.id}
-                  className={`size-button ${selectedVariant.id === variant.id ? 'selected' : ''}`}
-                  onClick={() => handleVariantChange(variant)}
+                  className={`size-button ${selectedVariant && selectedVariant.id === variant.id ? 'selected' : ''}`}
+                  onClick={() => setSelectedVariant(variant)}
                 >
-                  {variant.title.match(/\d+/)[0]}
+                  {variant.title && variant.title.match(/\d+/)
+                    ? variant.title.match(/\d+/)[0]
+                    : (variant.title && variant.title.length > 0
+                        ? variant.title
+                        : `Size ${variant.id}`)}
                 </button>
               ))}
             </div>
@@ -285,37 +278,39 @@ const ProductView = () => {
             <button 
               className="add-to-cart" 
               onClick={handleAddToCart}
-              disabled={isAddingToCart || !selectedVariant}
+              disabled={isAddingToCart || !(selectedVariant) || productInCart}
             >
-              {isAddingToCart ? 'ADDING...' : 'ADD TO CART'}
+              {productInCart ? 'IN CART' : (isAddingToCart ? 'ADDING...' : 'ADD TO CART')}
             </button>
-            <button className="buy-now" disabled={!selectedVariant}>
+            <button className="buy-now" disabled={!(selectedVariant)}>
               BUY NOW
             </button>
           </div>
 
-          {/* Product Description */}
-          {productDetails.description && (
-            <div className="product-description">
-              <p>{productDetails.description}</p>
-            </div>
-          )}
-
-          {/* Product Specifications */}
-          {productDetails.specifications && productDetails.specifications.length > 0 && (
-            <div className="product-specifications">
-              <h4>Product Details:</h4>
-              <ul>
-                {productDetails.specifications.map((spec, index) => (
-                  <li key={index}>
-                    <strong>{spec.key}:</strong> {spec.value}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Product Description and Details (dynamic) */}
+          <div className="product-description-section">
+            <h3 className="desc-title">DESCRIPTION</h3>
+            {productDetails.description && (
+              <p className="desc-text">{productDetails.description}</p>
+            )}
+            {productDetails.specifications && productDetails.specifications.length > 0 && (
+              <>
+                <h4 className="details-title">Product Details:</h4>
+                <ul className="details-list">
+                  {productDetails.specifications.map((spec, idx) => (
+                    <li key={idx}>
+                      <strong>{spec.key}:</strong> {spec.value}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
         </div>
       </div>
+      <CartSidebar 
+      isOpen={showCartSidebar} 
+      onClose={() => setShowCartSidebar(false)} />
     </div>
   );
 };
