@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './TrendingSlider.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const bestseller = () => {
+const bestseller = ({ onViewAll }) => {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('https://neemans.com/collections/best-selling-products/products.json')
@@ -35,9 +36,16 @@ const bestseller = () => {
       });
   }, []);
 
+  const handleViewAll = () => {
+    const handle = "best-selling-products";
+    if (onViewAll) {
+      onViewAll(handle);
+    }
+    navigate(`/collections/${handle}`);
+  };
+
   return (
     <section className="product-slider-section">
-      
       <div className="slider-header">
         <h2 className="slider-title">Best Seller</h2>
         <div className="slider-nav">
@@ -45,7 +53,6 @@ const bestseller = () => {
           <button className="nav-arrow next-arrow">&gt;</button>
         </div>
       </div>
-     
       <div className="product-slider-container">
         <div className="product-slider">
           {products.map((product) => (
@@ -61,19 +68,22 @@ const bestseller = () => {
               <button className="add-to-cart-btn">ADD TO CART</button>
             </Link>
           ))}
-
         </div>
+      </div>
+      <div className="view-all-container">
+        <button className="view-all-btn" onClick={handleViewAll}>
+          VIEW ALL PRODUCTS <span className="arrow">&rarr;</span>
+        </button>
       </div>
       <br />
       <div className="after-view-all-image-container">
         <img src="assets/banner4.png" alt="Banner after View All Products" className="after-view-all-image" />
       </div>
-       <div className="after-view-all-image-container">
+      <div className="after-view-all-image-container">
         <img src="assets/banner5.png" alt="Banner after View All Products" className="after-view-all-image" />
       </div>
     </section>
-    
   );
 };
 
-export default bestseller; 
+export default bestseller;

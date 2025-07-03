@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProductSlider.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Sample data structure. This will be replaced by the data fetched from your URL.
 // const sampleProducts = [
@@ -37,8 +37,9 @@ import { Link } from 'react-router-dom';
 //   },
 // ];
 
-const ProductSlider = () => {
+const ProductSlider = ({ onViewAll }) => {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('https://neemans.com/collections/newest-products/products.json')
@@ -70,6 +71,14 @@ const ProductSlider = () => {
       });
   }, []);
 
+  const handleViewAll = () => {
+    const handle = "all-products";
+    if (onViewAll) {
+      onViewAll(handle);
+    }
+    navigate(`/collections/${handle}`);
+  };
+
   return (
     <section className="product-slider-section">
       <div className="after-view-all-image-container">
@@ -82,7 +91,6 @@ const ProductSlider = () => {
           <button className="nav-arrow next-arrow">&gt;</button>
         </div>
       </div>
-     
       <div className="product-slider-container">
         <div className="product-slider">
           {products.map((product) => (
@@ -98,8 +106,12 @@ const ProductSlider = () => {
               <button className="add-to-cart-btn">ADD TO CART</button>
             </Link>
           ))}
-
         </div>
+      </div>
+      <div className="view-all-container">
+        <button className="view-all-btn" onClick={handleViewAll}>
+          VIEW ALL PRODUCTS <span className="arrow">&rarr;</span>
+        </button>
       </div>
       <br />
       <div className="after-view-all-image-container">
@@ -109,4 +121,4 @@ const ProductSlider = () => {
   );
 };
 
-export default ProductSlider; 
+export default ProductSlider;

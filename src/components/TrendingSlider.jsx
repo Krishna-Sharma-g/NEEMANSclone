@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './TrendingSlider.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Trendingslider = () => {
+const Trendingslider = ({ onViewAll }) => {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('https://neemans.com/collections/trending-products/products.json')
@@ -35,9 +36,16 @@ const Trendingslider = () => {
       });
   }, []);
 
+  const handleViewAll = () => {
+    const handle = "all-products";
+    if (onViewAll) {
+      onViewAll(handle);
+    }
+    navigate(`/collections/${handle}`);
+  };
+
   return (
     <section className="product-slider-section">
-      
       <div className="slider-header">
         <h2 className="slider-title">Trending</h2>
         <div className="slider-nav">
@@ -45,7 +53,6 @@ const Trendingslider = () => {
           <button className="nav-arrow next-arrow">&gt;</button>
         </div>
       </div>
-     
       <div className="product-slider-container">
         <div className="product-slider">
           {products.map((product) => (
@@ -61,8 +68,12 @@ const Trendingslider = () => {
               <button className="add-to-cart-btn">ADD TO CART</button>
             </Link>
           ))}
-
         </div>
+      </div>
+      <div className="view-all-container">
+        <button className="view-all-btn" onClick={handleViewAll}>
+          VIEW ALL PRODUCTS <span className="arrow">&rarr;</span>
+        </button>
       </div>
       <br />
       <div className="after-view-all-image-container">
@@ -72,4 +83,4 @@ const Trendingslider = () => {
   );
 };
 
-export default Trendingslider; 
+export default Trendingslider;

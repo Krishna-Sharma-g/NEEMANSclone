@@ -1,6 +1,6 @@
 import React from 'react';
 import './CollectionCards.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const collections = [
   {
@@ -25,7 +25,17 @@ const collections = [
   },
 ];
 
-const CollectionCards = () => {
+const CollectionCards = ({ onViewAll }) => {
+  const navigate = useNavigate();
+
+  const handleViewAll = () => {
+    const handle = "all-products";
+    if (onViewAll) {
+      onViewAll(handle);
+    }
+    navigate(`/collections/${handle}`);
+  };
+
   return (
     <section className="collection-section">
       <h2 className="collection-title">Shop by collection</h2>
@@ -37,7 +47,7 @@ const CollectionCards = () => {
         ))}
       </div>
       <div className="view-all-container">
-        <button className="view-all-btn">
+        <button className="view-all-btn" onClick={handleViewAll}>
           VIEW ALL PRODUCTS <span className="arrow">&rarr;</span>
         </button>
       </div>
@@ -45,4 +55,4 @@ const CollectionCards = () => {
   );
 };
 
-export default CollectionCards; 
+export default CollectionCards;
