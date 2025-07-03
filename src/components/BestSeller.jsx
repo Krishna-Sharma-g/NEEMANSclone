@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TrendingSlider.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import CartSidebar from '../components/CartSidebar';
 
@@ -9,6 +9,7 @@ const bestseller = () => {
   const { addToCart, isInCart } = useCart();
   const [showCartSidebar, setShowCartSidebar] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const navigate = useNavigate();
 
   const handleAddToCart = (e, product) => {
   e.preventDefault();
@@ -60,7 +61,6 @@ const bestseller = () => {
 
   return (
     <section className="product-slider-section">
-      
       <div className="slider-header">
         <h2 className="slider-title">Best Seller</h2>
         <div className="slider-nav">
@@ -68,7 +68,6 @@ const bestseller = () => {
           <button className="nav-arrow next-arrow">&gt;</button>
         </div>
       </div>
-     
       <div className="product-slider-container">
         <div className="product-slider">
           {products.map((product) => (
@@ -90,14 +89,23 @@ const bestseller = () => {
                 </button>
             </Link>
           ))}
-
         </div>
+      </div>
+      <div className="view-all-container">
+        <button
+          className="view-all-btn"
+          onClick={() => {
+            navigate('/collections/all-products');
+          }}
+        >
+          VIEW ALL PRODUCTS <span className="arrow">&rarr;</span>
+        </button>
       </div>
       <br />
       <div className="after-view-all-image-container">
         <img src="assets/banner4.png" alt="Banner after View All Products" className="after-view-all-image" />
       </div>
-       <div className="after-view-all-image-container">
+      <div className="after-view-all-image-container">
         <img src="assets/banner5.png" alt="Banner after View All Products" className="after-view-all-image" />
       </div>
       <CartSidebar 
@@ -105,8 +113,7 @@ const bestseller = () => {
         onClose={() => setShowCartSidebar(false)} 
       />
     </section>
-    
   );
 };
 
-export default bestseller; 
+export default bestseller;

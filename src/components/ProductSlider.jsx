@@ -109,7 +109,6 @@ const ProductSlider = () => {
           <button className="nav-arrow next-arrow">&gt;</button>
         </div>
       </div>
-     
       <div className="product-slider-container">
         <div className="product-slider">
           {products.map((product) => (
@@ -133,8 +132,18 @@ const ProductSlider = () => {
 
             </Link>
           ))}
-
-                </div>
+        </div>
+      </div>
+      {/* Add the view all button here */}
+      <div className="view-all-container">
+        <button
+          className="view-all-btn"
+          onClick={() => {
+            navigate('/collections/all-products');
+          }}
+        >
+          VIEW ALL PRODUCTS <span className="arrow">&rarr;</span>
+        </button>
       </div>
       <br />
       <div className="after-view-all-image-container">
@@ -145,8 +154,7 @@ const ProductSlider = () => {
         onClose={() => setShowCartSidebar(false)} 
       />
     </section>
-
   );
 };
 
-export default ProductSlider; 
+export default ProductSlider;
