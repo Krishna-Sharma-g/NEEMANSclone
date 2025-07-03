@@ -77,7 +77,12 @@ const ProductView = () => {
         setLoading(false);
       }
     };
-
+    const handleBlink = (e) => {
+    const btn = e.currentTarget;
+    btn.classList.remove('blink');
+    void btn.offsetWidth;         
+    btn.classList.add('blink');
+};
     const fetchAllProducts = async () => {
         try {
             const response = await fetch(`https://neemans.com/products.json`);

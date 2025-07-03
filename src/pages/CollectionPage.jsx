@@ -51,45 +51,84 @@ function Collections() {
     fetchAllProducts();
   }, [handle]);
 
-  // Filtering logic
-  useEffect(() => {
-    let filtered = [...allProducts];
+  // Replace the entire filtering useEffect with this improved version:
+useEffect(() => {
+  let filtered = [...allProducts];
 
-    if (gender) filtered = filtered.filter(p => p.tags.some(tag => tag.toLowerCase().includes(gender.toLowerCase())));
-    if (productType) filtered = filtered.filter(p => p.product_type === productType);
-    if (collection) filtered = filtered.filter(p => p.tags.some(tag => tag.toLowerCase().includes(collection.toLowerCase())));
-    if (color) filtered = filtered.filter(p => p.tags.some(tag => tag.toLowerCase().includes(color.toLowerCase())));
-    if (size) filtered = filtered.filter(p => p.variants.some(v => v.title === size));
+  // Apply filters
+  if (gender) {
+    filtered = filtered.filter(p => 
+      p.tags.some(tag => tag.toLowerCase().includes(gender.toLowerCase()))
+    );
+  }
+  
+  if (productType) {
+    filtered = filtered.filter(p => p.product_type === productType);
+  }
+  
+  if (collection) {
+    filtered = filtered.filter(p => 
+      p.tags.some(tag => tag.toLowerCase().includes(collection.toLowerCase()))
+    );
+  }
+  
+  if (color) {
+    filtered = filtered.filter(p => 
+      p.tags.some(tag => tag.toLowerCase().includes(color.toLowerCase())) ||
+      p.title.toLowerCase().includes(color.toLowerCase())
+    );
+  }
+  
+  if (size) {
+    filtered = filtered.filter(p => 
+      p.variants.some(v => v.title && v.title.includes(size))
+    );
+  }
+  
+  // Price filter
+  filtered = filtered.filter(p => {
+    const price = parseFloat(p.variants[0]?.price || p.price || 0);
+    return price >= minPrice && price <= maxPrice;
+  });
+  
+  // Discount filter
+  if (discount) {
     filtered = filtered.filter(p => {
-      const price = parseFloat(p.variants[0]?.price || p.price || 0);
-      return price >= minPrice && price <= maxPrice;
+      const variant = p.variants[0];
+      if (!variant) return false;
+      const price = parseFloat(variant.price);
+      const compare = parseFloat(variant.compare_at_price || price);
+      if (!compare || compare <= price) return false;
+      const disc = Math.round(((compare - price) / compare) * 100);
+      return disc >= parseInt(discount);
     });
-    if (discount) {
-      filtered = filtered.filter(p => {
-        const variant = p.variants[0];
-        if (!variant) return false;
-        const price = parseFloat(variant.price);
-        const compare = parseFloat(variant.compare_at_price || price);
-        if (!compare || compare <= price) return false;
-        const disc = Math.round(((compare - price) / compare) * 100);
-        return disc >= parseInt(discount);
-      });
-    }
+  }
 
-    // Sorting
-    if (sortBy === 'price-asc') {
-      filtered.sort((a, b) => parseFloat(a.variants[0]?.price) - parseFloat(b.variants[0]?.price));
-    } else if (sortBy === 'price-desc') {
-      filtered.sort((a, b) => parseFloat(b.variants[0]?.price) - parseFloat(a.variants[0]?.price));
-    } else if (sortBy === 'title-asc') {
+  // Apply sorting
+  switch (sortBy) {
+    case 'price-asc':
+      filtered.sort((a, b) => parseFloat(a.variants[0]?.price || 0) - parseFloat(b.variants[0]?.price || 0));
+      break;
+    case 'price-desc':
+      filtered.sort((a, b) => parseFloat(b.variants[0]?.price || 0) - parseFloat(a.variants[0]?.price || 0));
+      break;
+    case 'title-asc':
       filtered.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === 'title-desc') {
+      break;
+    case 'title-desc':
       filtered.sort((a, b) => b.title.localeCompare(a.title));
-    }
-    // Default: featured (no sort or as fetched)
+      break;
+    case 'newest':
+      filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+      break;
+    default:
+      // Featured - no sorting or keep original order
+      break;
+  }
 
-    setProducts(filtered);
-  }, [allProducts, gender, productType, collection, color, size, minPrice, maxPrice, discount, sortBy]);
+  setProducts(filtered);
+}, [allProducts, gender, productType, collection, color, size, minPrice, maxPrice, discount, sortBy]);
+
 
   // Filter options
   const genderOptions = ['Men', 'Women'];
@@ -110,6 +149,18 @@ function Collections() {
     { label: '60% and above', value: '60' },
     { label: '70% and above', value: '70' }
   ];
+
+  const resetFilters = () => {
+  setGender('');
+  setProductType('');
+  setCollection('');
+  setColor('');
+  setSize('');
+  setMinPrice(0);
+  setMaxPrice(5000);
+  setDiscount('');
+  setSortBy('featured');
+};
 
   return (
     <div className="App">

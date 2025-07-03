@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './ProductSlider.css';
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import CartSidebar from '../components/CartSidebar';
 
 // Sample data structure. This will be replaced by the data fetched from your URL.
 // const sampleProducts = [
@@ -39,6 +41,27 @@ import { Link } from 'react-router-dom';
 
 const ProductSlider = () => {
   const [products, setProducts] = useState([]);
+  const { addToCart, isInCart } = useCart();
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  const handleAddToCart = (e, product) => {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  setIsAddingToCart(true);
+  const productToAdd = {
+    id: product.id,
+    title: product.name,
+    price: product.price,
+    image: product.image,
+    variant_title: product.name.split(" : ")[1] || 'Default',
+    variant_id: product.id
+  };
+  addToCart(productToAdd);
+  setShowCartSidebar(true);
+  setTimeout(() => setIsAddingToCart(false), 500);
+};
 
   useEffect(() => {
     fetch('https://neemans.com/collections/newest-products/products.json')
@@ -52,6 +75,7 @@ const ProductSlider = () => {
             discount = `${Math.round(((originalPrice - price) / originalPrice) * 100)}% OFF`;
           }
 
+  
           return {
             id: p.id,
             handle: p.handle,
@@ -95,17 +119,30 @@ const ProductSlider = () => {
                 <span className="original-price">Rs. {product.originalPrice}</span>
                 <span className="discount">{product.discount}</span>
               </div>
-              <button className="add-to-cart-btn">ADD TO CART</button>
+              <button 
+              className="add-to-cart-btn" 
+              onClick={(e) => handleAddToCart(e, product)}
+              disabled={isAddingToCart || isInCart(product.id)}
+              >
+                {isInCart(product.id) ? 'IN CART' : (isAddingToCart ? 'ADDING...' : 'ADD TO CART')}
+                </button>
+
+
             </Link>
           ))}
 
-        </div>
+                </div>
       </div>
       <br />
       <div className="after-view-all-image-container">
         <img src="assets/banner3.png" alt="Banner after View All Products" className="after-view-all-image" />
       </div>
+      <CartSidebar 
+        isOpen={showCartSidebar} 
+        onClose={() => setShowCartSidebar(false)} 
+      />
     </section>
+
   );
 };
 

@@ -101,7 +101,7 @@ const Navbar = () => {
 
   return (
     <>
-      <header className={`header ${isSticky ? 'sticky' : ''} ${!isVisible ? 'hidden' : ''}`}>
+      <header className={`header ${isSticky ? 'sticky' : ''} ${!isVisible ? 'hidden' : ''} ${activeMenu ? `menu-open-${activeMenu.toLowerCase()}` : ''}`}>
         <div className="top-bar">
           <div className="promo-message">
             <span>BUY 2, GET 7% OFF; BUY 3, GET 10% OFF</span>
@@ -155,7 +155,7 @@ const Navbar = () => {
             </div>
           </div>
           {activeMenu && menuData[activeMenu] && (
-            <div className="mega-menu">
+            <div className="mega-menu" onMouseEnter={() => setActiveMenu(activeMenu)} onMouseLeave={() => setActiveMenu(null)}>
               <div className="mega-menu-content">
                 {menuData[activeMenu].map((column) => {
                   const columnHandle = column.handle || column.title.toLowerCase().replace(/\s+/g, '-');
