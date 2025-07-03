@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './ProductSlider.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import '../styles/CartSidebar.css';
 import CartSidebar from '../components/CartSidebar';
 
 // Sample data structure. This will be replaced by the data fetched from your URL.
@@ -41,6 +42,7 @@ import CartSidebar from '../components/CartSidebar';
 
 const ProductSlider = () => {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
   const [showCartSidebar, setShowCartSidebar] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -62,6 +64,7 @@ const ProductSlider = () => {
   setShowCartSidebar(true);
   setTimeout(() => setIsAddingToCart(false), 500);
 };
+  
 
   useEffect(() => {
     fetch('https://neemans.com/collections/newest-products/products.json')
