@@ -15,6 +15,7 @@ import CollectionPage from './pages/CollectionPage';
 import ProductView from './pages/ProductView';
 import Cart from './pages/Cart';
 import { CartProvider } from './context/CartContext';
+import FooterBanner from './components/FooterBanner';
 
 function HomePage() {
   return (
@@ -30,6 +31,7 @@ function HomePage() {
       <ReviewImageSlider />
       <BestSeller />
       <VideoSlider />
+      <FooterBanner />
     </div>
   );
 }

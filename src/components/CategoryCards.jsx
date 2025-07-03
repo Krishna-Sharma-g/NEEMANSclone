@@ -11,13 +11,13 @@ const categories = [
   },
   {
     label: 'SLIP-ONS',
-    image: 'https://neemans.com/cdn/shop/files/Frame_39231_9d2e-445e-89e8-c64c2c47d688.png?v=1712729212&width=400',
+    image: 'https://neemans.com/cdn/shop/files/Frame_39231_9d230ddc-a0bd-445e-89e8-c64c2c47d688.png?v=1712729212&width=400',
     handle: 'slip-ons',
     bgtext: 'SLIP ONS',
   },
   {
     label: 'LOAFERS',
-    image: 'https://neemans.com/cdn/shop/files/Frame_39233_d96e-4988-a4f6-0c508f84a258.png?v=1712583768&width=400',
+    image: 'https://neemans.com/cdn/shop/files/Frame_39233_d9666860-0b4a-4988-a4f6-0c508f84a258.png?v=1712583768&width=400',
     handle: 'loafers',
     bgtext: 'LOAFERS',
   },
