@@ -6,28 +6,105 @@ import CartSidebar from './CartSidebar';
 
 const menuData = {
   MEN: [
-    { title: 'SNEAKERS', handle: 'sneakers-for-men', links: [
-      { label: 'CASUAL', handle: 'casual-sneakers-for-men' },
-      { label: 'CHUNKY', handle: 'chunky-sneakers-for-men' },
-      { label: 'FORMAL', handle: 'formal-sneakers-for-men' },
-      { label: 'RETRO', handle: 'retro-sneakers-for-men' },
-      { label: 'SIGNATURE', handle: 'signature-sneakers-for-men' },
-      { label: 'SPORTS', handle: 'sports-sneakers-for-men' },
-      { label: 'WALKING', handle: 'walking-sneakers-for-men' },
-    ]},
-    { title: 'SLIP ONS', handle: 'men-slip-ons', links: ['CASUAL', 'CHUNKY', 'FORMAL', 'SIGNATURE', 'SPORTS', 'WALKING'] },
-    { title: 'LOAFERS & OXFORDS', handle: 'men-loafers-oxfords', links: ['CASUAL', 'FORMAL'] },
-    { title: 'SLIDES & SANDALS', handle: 'men-slides-sandals', links: ['DAILY USE', 'OUTDOOR', 'EXTRA SOFT', 'TRENDY'] },
-    { title: 'FLIP FLOPS', handle: 'men-flip-flops', links: ['DAILY USE', 'EXTRA SOFT', 'TRENDY'] },
-    { title: 'CLOGS', handle: 'men-cogs', links: ['OUTDOOR'] },
+    {
+      title: 'SNEAKERS',
+      handle: 'sneakers-for-men',
+      links: [
+        { label: 'CASUAL', handle: 'casual-sneakers-for-men' },
+        { label: 'CHUNKY', handle: 'chunky-sneakers-for-men' },
+        { label: 'FORMAL', handle: 'formal-sneakers-for-men' },
+        { label: 'RETRO', handle: 'retro-sneakers-for-men' },
+        { label: 'SIGNATURE', handle: 'signature-sneakers-for-men' },
+        { label: 'SPORTS', handle: 'sports-sneakers-for-men' },
+        { label: 'WALKING', handle: 'walking-sneakers-for-men' },
+      ],
+    },
+    {
+      title: 'SLIP ONS',
+      handle: 'slip-ons-for-men',
+      links: [
+        { label: 'CASUAL', handle: 'casual-slip-ons-for-men' },
+        { label: 'CHUNKY', handle: 'chunky-slip-ons-for-men' },
+        { label: 'FORMAL', handle: 'formal-slip-ons-for-men' },
+        { label: 'SIGNATURE', handle: 'signature-slip-ons-for-men' },
+        { label: 'SPORTS', handle: 'sports-slip-ons-for-men' },
+        { label: 'WALKING', handle: 'walking-slip-ons-for-men' },
+      ],
+    },
+    {
+      title: 'LOAFERS & OXFORDS',
+      handle: 'loafers-oxfords-for-men',
+      links: [
+        { label: 'CASUAL', handle: 'casual-loafers-oxfords-for-men' },
+        { label: 'FORMAL', handle: 'formal-loafers-oxfords-for-men' },
+      ],
+    },
+    {
+      title: 'SLIDES & SANDALS',
+      handle: 'slides-sandals-for-men',
+      links: [
+        { label: 'DAILY USE', handle: 'daily-use-slides-sandals-for-men' },
+        { label: 'OUTDOOR', handle: 'outdoor-slides-sandals-for-men' },
+        { label: 'EXTRA SOFT', handle: 'extra-soft-slides-sandals-for-men' },
+        { label: 'TRENDY', handle: 'trendy-slides-sandals-for-men' },
+      ],
+    },
+    {
+      title: 'FLIP FLOPS',
+      handle: 'flip-flops-for-men',
+      links: [
+        { label: 'DAILY USE', handle: 'daily-use-flip-flops-for-men' },
+        { label: 'EXTRA SOFT', handle: 'extra-soft-flip-flops-for-men' },
+        { label: 'TRENDY', handle: 'trendy-flip-flops-for-men' },
+      ],
+    },
+    {
+      title: 'CLOGS',
+      handle: 'clogs-for-men',
+      links: [
+        { label: 'OUTDOOR', handle: 'outdoor-clogs-for-men' },
+      ],
+    },
   ],
   WOMEN: [
-    { title: 'SNEAKERS', handle: 'women-sneakers', links: ['CASUAL', 'CHUNKY', 'FORMAL', 'RETRO'] },
-    { title: 'SLIP ONS', handle: 'women-slip-ons', links: ['CASUAL', 'CHUNKY', 'FORMAL'] },
-    { title: 'LOAFERS & OXFORDS', handle: 'women-loafers-oxfords', links: ['CASUAL', 'FORMAL'] },
-    { title: 'FLATS', handle: 'women-flats', links: ['DAILY USE', 'OUTDOOR'] },
+    {
+      title: 'SNEAKERS',
+      handle: 'sneakers-for-women',
+      links: [
+        { label: 'CASUAL', handle: 'casual-sneakers-for-women' },
+        { label: 'CHUNKY', handle: 'chunky-sneakers-for-women' },
+        { label: 'FORMAL', handle: 'formal-sneakers-for-women' },
+        { label: 'RETRO', handle: 'retro-sneakers-for-women' },
+      ],
+    },
+    {
+      title: 'SLIP ONS',
+      handle: 'slip-ons-for-women',
+      links: [
+        { label: 'CASUAL', handle: 'casual-slip-ons-for-women' },
+        { label: 'CHUNKY', handle: 'chunky-slip-ons-for-women' },
+        { label: 'FORMAL', handle: 'formal-slip-ons-for-women' },
+      ],
+    },
+    {
+      title: 'LOAFERS & OXFORDS',
+      handle: 'loafers-oxfords-for-women',
+      links: [
+        { label: 'CASUAL', handle: 'casual-loafers-oxfords-for-women' },
+        { label: 'FORMAL', handle: 'formal-loafers-oxfords-for-women' },
+      ],
+    },
+    {
+      title: 'FLATS',
+      handle: 'flats-for-women',
+      links: [
+        { label: 'DAILY USE', handle: 'daily-use-flats-for-women' },
+        { label: 'OUTDOOR', handle: 'outdoor-flats-for-women' },
+      ],
+    },
   ],
 };
+
 
 const navLinks = [
   { label: 'NEW', to: '#', dropdown: true },
