@@ -130,13 +130,12 @@ const Navbar = () => {
             <span>HELP</span>
           </div>
         </div>
-        <div
-          className="main-nav-container"
-          // Remove onMouseLeave here, handle with hover state below
-        >
+        <div className="main-nav-container">
           <div className="main-nav">
             <div className="logo">
-              <img src="/assets/logoimage.png" alt="NEEMAN'S" />
+              <Link to="/">
+                <img src="/assets/logoimage.png" alt="NEEMAN'S" />
+              </Link>
             </div>
             <nav className="nav-links">
               {navLinks.map((link) => (
@@ -236,5 +235,6 @@ const Navbar = () => {
     </>
   );
 };
+
 
 export default Navbar;
