@@ -1,32 +1,91 @@
 .product-view {
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  flex-direction: row;
+  gap: 40px;
+  max-width: 1200px;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px 32px;
+  align-items: flex-start;
+  background: #fff;
 }
 
 .product-images {
-  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.vertical-thumbnails {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-height: 100vh;
+  gap: 16px;
+  align-items: center;
+  min-width: 100px;
+  max-height: 500px;
   overflow-y: auto;
 }
 
-.product-images img {
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 0px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.thumbnail.active {
+  border-color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.main-image {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-product-image {
   width: 100%;
-  height: auto;
-  border-radius: 10px;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .product-details {
   flex: 1;
-  padding: 20px;
+  padding: 32px;
+  max-width: 650px;
+}
+
+.product-badge {
+  margin-bottom: 8px;
+}
+
+.product-badge .brand {
+  background: #000;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .product-details h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #333;
+  line-height: 1.3;
+  font-weight: 600;
 }
 
 .product-details h2 {
@@ -39,73 +98,150 @@
   color: #666;
 }
 
-.product-details .discount {
-  color: red;
-  font-weight: bold;
+.tax-info {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 20px;
 }
 
-.product-details .tax-info {
-  font-size: 0.9rem;
-  color: #888;
+/* Size Selection */
+.size-selection {
+  margin: 25px 0;
 }
 
-.product-details .add-to-cart,
-.product-details .buy-now {
-  padding: 10px 20px;
-  margin-right: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.product-details .buy-now {
-  background-color: #28a745;
-}
-
-.product-details .add-to-cart:hover,
-.product-details .buy-now:hover {
-  opacity: 0.9;
-}
-
-.product-details .emi-info {
-  font-size: 0.9rem;
-  color: #555;
-  margin-top: 10px;
-}
-
-.product-details ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.product-details ul li {
+.size-selection h4 {
   font-size: 1rem;
-  margin-bottom: 5px;
+  margin-bottom: 12px;
+  color: #333;
+  font-weight: 600;
 }
 
-.product-details .sizes {
+.sizes {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.product-details .size-button {
-  padding: 10px;
-  border: 1px solid #ccc;
+.size-button {
+  padding: 12px 16px;
+  border: 1.5px solid #ddd;
   background-color: white;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 0px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 50px;
+  text-align: center;
 }
 
-.product-details .size-button:hover {
+.size-button:hover {
+  border-color: #333;
   background-color: #f8f9fa;
 }
 
-.product-details h4 {
-  margin-top: 20px;
-  font-size: 1.2rem;
+.size-button.selected {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.add-to-cart,
+.buy-now {
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.add-to-cart {
+  background-color: #333;
+  color: white;
+}
+
+.add-to-cart:hover:not(:disabled) {
+  background-color: #555;
+}
+
+.add-to-cart:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.buy-now {
+  background-color: #ff6b35;
+  color: white;
+}
+
+.buy-now:hover:not(:disabled) {
+  background-color: #e55a2b;
+}
+
+.buy-now:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Product Description */
+.product-description {
+  margin: 25px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.product-description p {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Product Specifications */
+.product-specifications {
+  margin-top: 25px;
+}
+
+.product-specifications h4 {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.product-specifications ul {
+  list-style-type: none;
+  padding: 0;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.product-specifications ul li {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.product-specifications ul li strong {
+  color: #333;
+  font-weight: 600;
 }
 
 .price-section {
@@ -179,4 +315,202 @@
 
 .emi-slogan{
   color: #888;
+}
+
+/* Loading and Error States */
+.loading, .error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  color: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-view {
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+  }
+  
+  .product-images {
+    order: 1;
+  }
+  
+  .product-details {
+    order: 2;
+    padding: 15px;
+    max-width: none;
+  }
+  
+  .main-image {
+    max-width: 100%;
+  }
+  
+  .image-thumbnails {
+    justify-content: center;
+  }
+  
+  .thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .product-details h1 {
+    font-size: 1.5rem;
+  }
+  
+  .price-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .sizes {
+    gap: 6px;
+  }
+  
+  .size-button {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-view {
+    padding: 10px;
+  }
+  
+  .product-details {
+    padding: 10px;
+  }
+  
+  .thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .emi {
+    padding: 8px !important;
+  }
+  
+  .product-description,
+  .product-specifications ul {
+    padding: 15px;
+  }
+}
+
+/* Accessibility Improvements */
+.size-button:focus,
+.add-to-cart:focus,
+.buy-now:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.thumbnail:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Animation for image transitions */
+.main-product-image {
+  transition: opacity 0.3s ease;
+}
+
+/* Hover effects for better interactivity */
+.product-badge .brand:hover {
+  background: #333;
+}
+
+.product-specifications ul li:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 8px;
+  margin: 0 -8px 8px -8px;
+  border-radius: 4px;
+}
+
+/* Stock status styling */
+.stock-status {
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.in-stock {
+  color: #28a745;
+}
+
+.out-of-stock {
+  color: #dc3545;
+}
+
+/* Additional visual enhancements */
+.product-view {
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+.main-image {
+  overflow: hidden;
+}
+
+.main-product-image:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease;
+}
+
+/* Better typography */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background: #fff;
+}
+
+/* Enhanced button styles */
+.add-to-cart:active,
+.buy-now:active {
+  transform: translateY(1px);
+}
+
+.size-button:active {
+  transform: scale(0.98);
+}
+
+.carousel-arrow {
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  margin: 4px 0;
+  transition: color 0.2s, background 0.2s, border 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.carousel-arrow:hover:not(:disabled) {
+  background: #f5f5f5;
+  color: #111;
+  border-color: #aaa;
+}
+.carousel-arrow:disabled {
+  color: #ccc;
+  border-color: #eee;
+  background: #fafafa;
+  cursor: not-allowed;
 }
