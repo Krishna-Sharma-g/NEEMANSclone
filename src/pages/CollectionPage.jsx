@@ -1,136 +1,51 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useInView } from 'react-intersection-observer';
 import './CollectionPage.css';
 
 function Collections() {
   const { handle } = useParams();
-  // Product data
-  const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
-
-  // Filter states
-  const [gender, setGender] = useState('');
-  const [productType, setProductType] = useState('');
-  const [collection, setCollection] = useState('');
-  const [color, setColor] = useState('');
-  const [size, setSize] = useState('');
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(5000);
-  const [discount, setDiscount] = useState('');
-  const [sortBy, setSortBy] = useState('featured');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const title = handle.replace(/-/g, ' ').toUpperCase();
 
-  // Fetch all products on mount
-  useEffect(() => {
-    const fetchAllProducts = async () => {
-      let page = 1;
-      let fetched = [];
-      let hasMore = true;
-      try {
-        while (hasMore) {
-          const res = await axios.get(
-            `https://neemans.com/collections/${handle}/products.json?page=${page}`
-          );
-          if (res.data.products.length === 0) {
-            hasMore = false;
-          } else {
-            fetched = [...fetched, ...res.data.products];
-            page += 1;
-          }
-        }
-        setAllProducts(fetched);
-        setProducts(fetched);
-      } catch (err) {
-        setAllProducts([]);
-        setProducts([]);
-      }
-    };
-    fetchAllProducts();
+  const { ref: sentinelRef, inView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
+  const fetchProductsPage = useCallback(async (pageNum, reset = false) => {
+    setLoading(true);
+    let url = `https://neemans.com/collections/${handle}/products.json?page=${pageNum}`;
+    const res = await axios.get(url);
+    let fetched = res.data.products || [];
+    setProducts(prev => reset ? fetched : [...prev, ...fetched]);
+    setHasMore(fetched.length > 0);
+    setLoading(false);
   }, [handle]);
 
-  // Replace the entire filtering useEffect with this improved version:
-useEffect(() => {
-  let filtered = [...allProducts];
+  useEffect(() => {
+    setProducts([]);
+    setPage(1);
+    setHasMore(true);
+    fetchProductsPage(1, true);
+  }, [handle, fetchProductsPage]);
 
-  // Apply filters
-  if (gender) {
-    filtered = filtered.filter(p => 
-      p.tags.some(tag => tag.toLowerCase().includes(gender.toLowerCase()))
-    );
-  }
-  
-  if (productType) {
-    filtered = filtered.filter(p => p.product_type === productType);
-  }
-  
-  if (collection) {
-    filtered = filtered.filter(p => 
-      p.tags.some(tag => tag.toLowerCase().includes(collection.toLowerCase()))
-    );
-  }
-  
-  if (color) {
-    filtered = filtered.filter(p => 
-      p.tags.some(tag => tag.toLowerCase().includes(color.toLowerCase())) ||
-      p.title.toLowerCase().includes(color.toLowerCase())
-    );
-  }
-  
-  if (size) {
-    filtered = filtered.filter(p => 
-      p.variants.some(v => v.title && v.title.includes(size))
-    );
-  }
-  
-  // Price filter
-  filtered = filtered.filter(p => {
-    const price = parseFloat(p.variants[0]?.price || p.price || 0);
-    return price >= minPrice && price <= maxPrice;
-  });
-  
-  // Discount filter
-  if (discount) {
-    filtered = filtered.filter(p => {
-      const variant = p.variants[0];
-      if (!variant) return false;
-      const price = parseFloat(variant.price);
-      const compare = parseFloat(variant.compare_at_price || price);
-      if (!compare || compare <= price) return false;
-      const disc = Math.round(((compare - price) / compare) * 100);
-      return disc >= parseInt(discount);
-    });
-  }
+  useEffect(() => {
+    if (inView && hasMore && !loading && page > 1) {
+      fetchProductsPage(page);
+    }
+  }, [inView]);
 
-  // Apply sorting
-  switch (sortBy) {
-    case 'price-asc':
-      filtered.sort((a, b) => parseFloat(a.variants[0]?.price || 0) - parseFloat(b.variants[0]?.price || 0));
-      break;
-    case 'price-desc':
-      filtered.sort((a, b) => parseFloat(b.variants[0]?.price || 0) - parseFloat(a.variants[0]?.price || 0));
-      break;
-    case 'title-asc':
-      filtered.sort((a, b) => a.title.localeCompare(b.title));
-      break;
-    case 'title-desc':
-      filtered.sort((a, b) => b.title.localeCompare(a.title));
-      break;
-    case 'newest':
-      filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-      break;
-    default:
-      // Featured - no sorting or keep original order
-      break;
-  }
-
-  setProducts(filtered);
-}, [allProducts, gender, productType, collection, color, size, minPrice, maxPrice, discount, sortBy]);
-
-
-  // Filter options
+  useEffect(() => {
+    if (inView && hasMore && !loading) {
+      setPage(prev => prev + 1);
+    }
+  }, [inView, hasMore, loading]);
   const genderOptions = ['Men', 'Women'];
   const productTypeOptions = [
     'Clogs', 'Flats', 'Flip Flops', 'Loafers', 'Oxfords', 'Sandals', 'Slides', 'Slip On', 'Sneakers'
@@ -150,110 +65,323 @@ useEffect(() => {
     { label: '70% and above', value: '70' }
   ];
 
-  const resetFilters = () => {
-  setGender('');
-  setProductType('');
-  setCollection('');
-  setColor('');
-  setSize('');
-  setMinPrice(0);
-  setMaxPrice(5000);
-  setDiscount('');
-  setSortBy('featured');
-};
+  // Dropdown open/close state for each filter
+  const [openDropdown, setOpenDropdown] = useState('');
+  const [selectedFilters, setSelectedFilters] = useState({
+    gender: '',
+    productType: '',
+    collection: '',
+    color: '',
+    size: '',
+    discount: '',
+  });
+
+  // Close dropdowns when clicking outside
+  const sidebarRef = useRef(null);
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+        setOpenDropdown('');
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  // Handler for radio selection
+  const handleFilterSelect = (filter, value) => {
+    setSelectedFilters(prev => ({
+      ...prev,
+      [filter]: prev[filter] === value ? '' : value
+    }));
+    setOpenDropdown('');
+  };
 
   return (
-    <div className="App">
-      <Navbar />
-      <div className="collection-main">
-        <aside className="collection-sidebar">
-          <h3>Sort & Filters</h3>
-          <div className="filter-group">
-            <label>Gender</label>
-            <select value={gender} onChange={e => setGender(e.target.value)}>
-              <option value="">All</option>
-              {genderOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+    <div className="collection-main">
+      <aside className="collection-sidebar" ref={sidebarRef}>
+        {/* <h3>Sort & Filters</h3> -- removed heading */}
+        <div className="filter-group">
+          <div className="custom-dropdown-wrap">
+            <button
+              className={`custom-dropdown-btn${openDropdown === 'gender' ? ' open' : ''}`}
+              type="button"
+              onClick={() => setOpenDropdown(openDropdown === 'gender' ? '' : 'gender')}
+            >
+              {selectedFilters.gender || 'Select Gender'}
+              <span className={`arrow${openDropdown === 'gender' ? ' up' : ''}`} />
+            </button>
+            {openDropdown === 'gender' && (
+              <ul className="custom-dropdown-list">
+                <li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="gender"
+                      checked={selectedFilters.gender === ''}
+                      onChange={() => handleFilterSelect('gender', '')}
+                    />
+                    All
+                  </label>
+                </li>
+                {genderOptions.map(opt => (
+                  <li key={opt}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="gender"
+                        checked={selectedFilters.gender === opt}
+                        onChange={() => handleFilterSelect('gender', opt)}
+                      />
+                      {opt}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <div className="filter-group">
+          <div className="custom-dropdown-wrap">
+            <button
+              className={`custom-dropdown-btn${openDropdown === 'productType' ? ' open' : ''}`}
+              type="button"
+              onClick={() => setOpenDropdown(openDropdown === 'productType' ? '' : 'productType')}
+            >
+              {selectedFilters.productType || 'Select Product Type'}
+              <span className={`arrow${openDropdown === 'productType' ? ' up' : ''}`} />
+            </button>
+            {openDropdown === 'productType' && (
+              <ul className="custom-dropdown-list">
+                <li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="productType"
+                      checked={selectedFilters.productType === ''}
+                      onChange={() => handleFilterSelect('productType', '')}
+                    />
+                    All
+                  </label>
+                </li>
+                {productTypeOptions.map(opt => (
+                  <li key={opt}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="productType"
+                        checked={selectedFilters.productType === opt}
+                        onChange={() => handleFilterSelect('productType', opt)}
+                      />
+                      {opt}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <div className="filter-group">
+          <div className="custom-dropdown-wrap">
+            <button
+              className={`custom-dropdown-btn${openDropdown === 'collection' ? ' open' : ''}`}
+              type="button"
+              onClick={() => setOpenDropdown(openDropdown === 'collection' ? '' : 'collection')}
+            >
+              {selectedFilters.collection || 'Select Collection'}
+              <span className={`arrow${openDropdown === 'collection' ? ' up' : ''}`} />
+            </button>
+            {openDropdown === 'collection' && (
+              <ul className="custom-dropdown-list">
+                <li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="collection"
+                      checked={selectedFilters.collection === ''}
+                      onChange={() => handleFilterSelect('collection', '')}
+                    />
+                    All
+                  </label>
+                </li>
+                {collectionOptions.map(opt => (
+                  <li key={opt}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="collection"
+                        checked={selectedFilters.collection === opt}
+                        onChange={() => handleFilterSelect('collection', opt)}
+                      />
+                      {opt}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <div className="filter-group">
+          <div className="custom-dropdown-wrap">
+            <button
+              className={`custom-dropdown-btn${openDropdown === 'color' ? ' open' : ''}`}
+              type="button"
+              onClick={() => setOpenDropdown(openDropdown === 'color' ? '' : 'color')}
+            >
+              {selectedFilters.color || 'Select Color'}
+              <span className={`arrow${openDropdown === 'color' ? ' up' : ''}`} />
+            </button>
+            {openDropdown === 'color' && (
+              <ul className="custom-dropdown-list">
+                <li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="color"
+                      checked={selectedFilters.color === ''}
+                      onChange={() => handleFilterSelect('color', '')}
+                    />
+                    All
+                  </label>
+                </li>
+                {colorOptions.map(opt => (
+                  <li key={opt}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="color"
+                        checked={selectedFilters.color === opt}
+                        onChange={() => handleFilterSelect('color', opt)}
+                      />
+                      {opt}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <div className="filter-group">
+          <div className="custom-dropdown-wrap">
+            <button
+              className={`custom-dropdown-btn${openDropdown === 'size' ? ' open' : ''}`}
+              type="button"
+              onClick={() => setOpenDropdown(openDropdown === 'size' ? '' : 'size')}
+            >
+              {selectedFilters.size || 'Select Size'}
+              <span className={`arrow${openDropdown === 'size' ? ' up' : ''}`} />
+            </button>
+            {openDropdown === 'size' && (
+              <ul className="custom-dropdown-list">
+                <li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="size"
+                      checked={selectedFilters.size === ''}
+                      onChange={() => handleFilterSelect('size', '')}
+                    />
+                    All
+                  </label>
+                </li>
+                {sizeOptions.map(opt => (
+                  <li key={opt}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="size"
+                        checked={selectedFilters.size === opt}
+                        onChange={() => handleFilterSelect('size', opt)}
+                      />
+                      {opt}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <div className="filter-group">
+          <div className="custom-dropdown-wrap">
+            <button
+              className={`custom-dropdown-btn${openDropdown === 'discount' ? ' open' : ''}`}
+              type="button"
+              onClick={() => setOpenDropdown(openDropdown === 'discount' ? '' : 'discount')}
+            >
+              {selectedFilters.discount
+                ? discountOptions.find(o => o.value === selectedFilters.discount)?.label
+                : 'Select Discount'}
+              <span className={`arrow${openDropdown === 'discount' ? ' up' : ''}`} />
+            </button>
+            {openDropdown === 'discount' && (
+              <ul className="custom-dropdown-list">
+                <li>
+                  <label>
+                    <input
+                      type="radio"
+                      name="discount"
+                      checked={selectedFilters.discount === ''}
+                      onChange={() => handleFilterSelect('discount', '')}
+                    />
+                    All
+                  </label>
+                </li>
+                {discountOptions.map(opt => (
+                  <li key={opt.value}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="discount"
+                        checked={selectedFilters.discount === opt.value}
+                        onChange={() => handleFilterSelect('discount', opt.value)}
+                      />
+                      {opt.label}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </aside>
+      <main className="collection-content">
+        <div className="collection-header">
+          <h3 className="collection-title">{title}</h3>
+          <div className="sort-by">
+            <label>Sort by: </label>
+            <select>
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="title-asc">Name: A-Z</option>
+              <option value="title-desc">Name: Z-A</option>
             </select>
           </div>
-          <div className="filter-group">
-            <label>Product Type</label>
-            <select value={productType} onChange={e => setProductType(e.target.value)}>
-              <option value="">All</option>
-              {productTypeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Collection</label>
-            <select value={collection} onChange={e => setCollection(e.target.value)}>
-              <option value="">All</option>
-              {collectionOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Color</label>
-            <select value={color} onChange={e => setColor(e.target.value)}>
-              <option value="">All</option>
-              {colorOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Size</label>
-            <select value={size} onChange={e => setSize(e.target.value)}>
-              <option value="">All</option>
-              {sizeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Price</label>
-            <div className="price-range">
-              <input type="number" min="0" max="5000" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} />
-              <span> - </span>
-              <input type="number" min="0" max="5000" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
-            </div>
-          </div>
-          <div className="filter-group">
-            <label>Discount</label>
-            <select value={discount} onChange={e => setDiscount(e.target.value)}>
-              <option value="">All</option>
-              {discountOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-            </select>
-          </div>
-        </aside>
-        <main className="collection-content">
-          <div className="collection-header">
-            <h3 className="collection-title">{title}</h3>
-            <div className="sort-by">
-              <label>Sort by: </label>
-              <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-                <option value="featured">Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="title-asc">Name: A-Z</option>
-                <option value="title-desc">Name: Z-A</option>
-              </select>
-            </div>
-          </div>
-          <div className="products-grid">
-            {products.map(product => (
-              <Link to={`/product/${product.handle}`} key={product.id} className="product-card">
-                <img className="product-image" src={product.images[0]?.src} alt={product.title} />
-                <h4 className="product-title">{product.title}</h4>
-                <p className="product-price">
-                  ₹{parseFloat(product.variants[0]?.price || product.price).toLocaleString()}
-                  {product.variants[0]?.compare_at_price && parseFloat(product.variants[0].compare_at_price) > parseFloat(product.variants[0].price) && (
-                    <span className="product-compare">₹{parseFloat(product.variants[0].compare_at_price).toLocaleString()}</span>
-                  )}
-                </p>
+        </div>
+        <div className="products-grid">
+          {products.map(product => (
+            <Link to={`/product/${product.handle}`} key={product.id} className="product-card">
+              <img className="product-image" src={product.images[0]?.src} alt={product.title} />
+              <h4 className="product-title">{product.title}</h4>
+              <p className="product-price">
+                ₹{parseFloat(product.variants[0]?.price || product.price).toLocaleString()}
                 {product.variants[0]?.compare_at_price && parseFloat(product.variants[0].compare_at_price) > parseFloat(product.variants[0].price) && (
-                  <span className="product-discount">
-                    {Math.round(((parseFloat(product.variants[0].compare_at_price) - parseFloat(product.variants[0].price)) / parseFloat(product.variants[0].compare_at_price)) * 100)}% OFF
-                  </span>
+                  <span className="product-compare">₹{parseFloat(product.variants[0].compare_at_price).toLocaleString()}</span>
                 )}
-              </Link>
-            ))}
-          </div>
-        </main>
-      </div>
+              </p>
+              {product.variants[0]?.compare_at_price && parseFloat(product.variants[0].compare_at_price) > parseFloat(product.variants[0].price) && (
+                <span className="product-discount">
+                  {Math.round(((parseFloat(product.variants[0].compare_at_price) - parseFloat(product.variants[0].price)) / parseFloat(product.variants[0].compare_at_price)) * 100)}% OFF
+                </span>
+              )}
+            </Link>
+          ))}
+          {hasMore && (
+            <div ref={sentinelRef} style={{ height: 1 }} />
+          )}
+          {loading && <div className="loading-indicator">Loading...</div>}
+        </div>
+      </main>
     </div>
   );
 }
