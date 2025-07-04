@@ -16,12 +16,13 @@ import ProductView from './pages/ProductView';
 import Cart from './pages/Cart';
 import { CartProvider } from './context/CartContext';
 import FooterBanner from './components/FooterBanner';
-import Footer from './components/Footer';
-
 import image from '/assets/image.png'; // Adjust the path as necessary
 import banner2 from '/assets/banner2.png'; // Adjust the path as necessary
 import banner3 from '/assets/banner3.png'; // Adjust the path as necessary
 import testimonialimage from '/assets/testimonial.png'; // Adjust the path as necessary
+import footerbanner from '/assets/footer.png'; // Adjust the path as necessary
+import StoryView from './components/StoryView';
+import Footer from './components/Footer';
 function HomePage() {
   return (
     <div className="App">
@@ -59,10 +60,24 @@ function HomePage() {
       "https://neemans.com/cdn/shop/files/Desktop_awards_…3ec-bf6a-9a2f34c1c547.jpg?v=1736334654&width=1500",
       "https://neemans.com/cdn/shop/files/Frame_3066.jpg?v=1712584274&width=1500"
   ]}
-/>
+  />
+  <ImageBanner imageUrl= "https://neemans.com/cdn/shop/files/Desktop_awards_cb07f1b0-6f23-43ec-bf6a-9a2f34c1c547.jpg?v=1736334654&width=1500" alt="Neeman's Impact" />
+
+  <ImageBanner imageUrl= "https://neemans.com/cdn/shop/files/Frame_3066.jpg?v=1712584274&width=1500" alt="Neeman's Impact" />
+    
       <VideoSlider />
-      <FooterBanner />
-      <Footer />
+      <ImageBanner imageUrl= {footerbanner} alt="Neeman's Impact" />
+      <StoryView
+  videoUrl="https://cdn.shopify.com/videos/c/o/v/f629a444b254409ea7c4562746413c1a.mp4"
+  imageUrl="https://neemans.com/cdn/shop/files/Videos_text.jpg?v=1712241682&width=550"
+  title="Our Story"
+  description="We crushed something and it turned into a story we're proud of!"
+  quote="Left in the ocean. Recycled into shoes."
+/>
+<ImageBanner imageUrl= "https://neemans.com/cdn/shop/files/Offline_store.jpg?v=1712241901&width=1500" alt="Neeman's Impact" />
+<ImageBanner imageUrl= "https://neemans.com/cdn/shop/files/Bulk_enquires_desktop_9efa04f3-7756-4e75-a8a1-d76c7d4615ec.jpg?v=1712241901&width=1500" alt="Neeman's Impact" />
+
+  <Footer/>
     </div>
   );
 }
