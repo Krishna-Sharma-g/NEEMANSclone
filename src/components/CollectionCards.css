@@ -130,36 +130,37 @@
     padding: 40px 0 60px 0;
   }
   .collection-cards {
-    grid-template-columns: 1fr;
-    gap: 14px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     max-width: 98vw;
   }
   .collection-card {
-    width: 90vw;
+    width: 44vw;
     max-width: 98vw;
   }
   .collection-card img {
-    height: 40vw;
-    max-height: 220px;
+    height: 28vw;
+    max-height: 120px;
   }
 }
 
 @media (max-width: 600px) {
   .collection-section {
-    padding: 24px 0 32px 0;
+    padding: 18px 0 24px 0;
   }
   .collection-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   .collection-cards {
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
   }
   .collection-card {
-    width: 98vw;
-    max-width: 99vw;
+    width: 48vw;
+    max-width: 50vw;
   }
   .collection-card img {
-    height: 38vw;
-    max-height: 160px;
+    height: 22vw;
+    max-height: 80px;
   }
 }

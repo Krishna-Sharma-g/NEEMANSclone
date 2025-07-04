@@ -36,7 +36,7 @@
 
 .main-nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 18px 48px 18px 32px;
   background: #fff;
@@ -90,13 +90,17 @@
 }
 
 .logo {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+  z-index: 2;
   font-family: 'Times New Roman', Times, serif;
   font-size: 2.2rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   color: #111;
-  display: flex;
-  align-items: center;
 }
 
 .logo img {
@@ -106,8 +110,12 @@
 
 .nav-links {
   display: flex;
-  gap: 38px;
+  gap: 24px;
   align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-72%);
+  z-index: 1;
 }
 
 .nav-item {
@@ -120,8 +128,8 @@
   text-decoration: none;
   color: #111;
   font-weight: 600;
-  font-size: 1.08rem;
-  letter-spacing: 0.18em;
+  font-size: 0.98rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 2px 0 2px 0;
   background: none;
@@ -152,7 +160,8 @@
   align-items: center;
   gap: 2.2rem;
   margin-left: auto;
-  /* Add this to push nav-actions to the right */
+  flex: 0 0 auto;
+  z-index: 2;
 }
 
 .nav-action {
@@ -444,5 +453,113 @@
   .navbar-sidebar.open {
     width: 80vw;
     max-width: 340px;
+  }
+}
+
+/* Extra small devices (phones, less than 600px) */
+@media (max-width: 600px) {
+  .main-nav {
+    padding: 6px 2vw;
+  }
+  .logo img {
+    height: 32px;
+  }
+  .cart-button {
+    font-size: 0.95rem;
+    gap: 4px;
+  }
+  .hamburger-menu {
+    width: 38px;
+    height: 38px;
+  }
+  .navbar-sidebar.open {
+    width: 95vw;
+    max-width: 100vw;
+    padding: 0;
+  }
+  .sidebar-header {
+    padding: 12px 8px 0 8px;
+  }
+  .sidebar-links, .sidebar-actions {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+/* Make sidebar scrollable on small screens */
+.navbar-sidebar.open {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure all touch targets are large enough */
+.nav-action, .cart-button, .hamburger-menu, .sidebar-close {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Focus styles for accessibility */
+.nav-action:focus, .cart-button:focus, .hamburger-menu:focus, .sidebar-close:focus {
+  outline: 2px solid #b9976f;
+  outline-offset: 2px;
+}
+
+@media (min-width: 1200px) {
+  .nav-links {
+    left: 50%;
+    transform: translateX(-60%);
+    gap: 12px;
+  }
+  .nav-links a, .nav-item > a, .nav-item > span {
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    padding: 2px 0 2px 0;
+  }
+  .nav-actions {
+    gap: 1.2rem;
+  }
+  .nav-action, .cart-button {
+    font-size: 0.82rem;
+    gap: 4px;
+  }
+  .nav-action svg, .cart-button svg {
+    font-size: 1.05em;
+  }
+}
+
+@media (max-width: 1199px) {
+  .nav-links {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .main-nav {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    padding: 16px 24px;
+  }
+  .logo {
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .nav-links {
+    position: static;
+    transform: none;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 0;
+    margin-top: 0;
+    gap: 24px;
+    order: 2;
+  }
+  .nav-actions {
+    justify-content: flex-end;
+    margin-left: 0;
+    order: 3;
+    width: 100%;
+    margin-top: 8px;
   }
 }
