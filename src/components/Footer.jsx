@@ -170,7 +170,7 @@ const Footer = () => {
           {/* Social icons can be added here */}
         </div>
         <div className="footer-payment">
-            <img src='https://cdn.shopify.com/s/files/1/2428/5565/files/100_Secure_Transaction_Mobile_1.jpg?v=1737029665&width=450' alt="Secure Transaction" />
+            <img src='https://cdn.shopify.com/s/files/1/2428/5565/files/100_Secure_Transaction_Desktop_1.jpg?v=1737029665&width=800' alt="Secure Transaction" />
             </div>
         <div className="footer-copyright">
           <p>© Neemans. All Rights Reserved.</p>
