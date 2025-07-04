@@ -16,6 +16,8 @@ import ProductView from './pages/ProductView';
 import Cart from './pages/Cart';
 import { CartProvider } from './context/CartContext';
 import FooterBanner from './components/FooterBanner';
+import Footer from './components/Footer';
+
 import image from '/assets/image.png'; // Adjust the path as necessary
 import banner2 from '/assets/banner2.png'; // Adjust the path as necessary
 import banner3 from '/assets/banner3.png'; // Adjust the path as necessary
@@ -60,6 +62,7 @@ function HomePage() {
 />
       <VideoSlider />
       <FooterBanner />
+      <Footer />
     </div>
   );
 }
