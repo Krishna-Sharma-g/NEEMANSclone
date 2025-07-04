@@ -38,7 +38,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
       title: 'Crossover Brogues : Black',
       price: 2749,
       originalPrice: 5199,
-      image: 'https://neemans.com/cdn/shop/files/ND_-CRB-_Black_3_b9d26dd6-304a-4988-93a3-efbe35964b3c.jpg?v=1743665432&width=800',
+      image: 'https://neemans.com/cdn/shop/files/ND_-_CRB_-_Black_1_37897054-8efe-404c-9953-2b6f961640fa.jpg?v=1743665432&width=800',
       variant_title: 'Black',
       size: '10'
     }

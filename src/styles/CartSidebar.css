@@ -372,7 +372,7 @@
   height: 60px;
   border-radius: 8px;
   overflow: hidden;
-  background: #f48f01;
+  background: #080808;
   flex-shrink: 0;
   position: relative;
   border: 2px solid #e9ecef;
@@ -386,7 +386,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(249, 110, 3, 0.3) 50%, transparent 70%);
   transform: translateX(-100%);
   transition: transform 0.6s ease;
 }
@@ -396,7 +395,7 @@
 }
 
 .best-selling-item:hover .best-selling-image {
-  border-color: #fa8807;
+  border-color: #020202;
   transform: scale(1.05);
 }
 
@@ -420,7 +419,7 @@
 .best-selling-info h5 {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fa8c06;
+  color: #070706;
   margin: 0 0 0.5rem 0;
   line-height: 1.4;
   overflow: hidden;
@@ -428,7 +427,7 @@
 }
 
 .best-selling-item:hover .best-selling-info h5 {
-  color: #e57c0d2f;
+  color: #a2a1a12f;
 }
 
 .best-selling-price {
@@ -441,7 +440,7 @@
 .best-selling-price .current-price {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #f68207;
+  color: #858484;
   position: relative;
 }
 
@@ -468,7 +467,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #f37c04;
+  background: #979696;
   color: white;
   font-size: 0.7rem;
   font-weight: 600;
@@ -519,7 +518,7 @@
 }
 
 .add-best-selling-btn:hover {
-  background: linear-gradient(135deg, #fe7a05 0%, #f59104 100%);
+  background: linear-gradient(135deg, #adacac 0%, #b2b1b1 100%);
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
 }
@@ -529,10 +528,6 @@
   box-shadow: 0 2px 8px rgba(249, 142, 2, 0.3);
 }
 
-.add-best-selling-btn.added {
-  background: #28a745;
-  animation: addedPulse 0.6s ease;
-}
 
 .add-best-selling-btn.added::after {
   content: '✓';
@@ -602,17 +597,6 @@
   position: relative;
 }
 
-.best-selling-price::after {
-  content: 'SAVE ' attr(data-savings);
-  position: absolute;
-  bottom: -18px;
-  left: 0;
-  font-size: 0.7rem;
-  color: #28a745;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
 
 .best-selling-item:hover .best-selling-price::after {
   opacity: 1;
