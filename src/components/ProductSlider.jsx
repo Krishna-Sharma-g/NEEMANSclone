@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ProductSlider.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
@@ -10,6 +10,7 @@ const ProductSlider = ({ title, fetchUrl, afterImages = [] }) => {
   const [showCartSidebar, setShowCartSidebar] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
+  const sliderRef = useRef(null);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -27,6 +28,16 @@ const ProductSlider = ({ title, fetchUrl, afterImages = [] }) => {
     setShowCartSidebar(true);
     setTimeout(() => setIsAddingToCart(false), 500);
   };
+const scrollSlider = (direction) => {
+  const slider = sliderRef.current;
+  if (!slider) return;
+  const card = slider.querySelector('.product-card');
+  const scrollAmount = (card?.offsetWidth || 320) + 20;
+  slider.scrollBy({
+    left: direction === 'left' ? -scrollAmount : scrollAmount,
+    behavior: 'smooth',
+  });
+};
 
   useEffect(() => {
     if (!fetchUrl) return;
@@ -44,8 +55,8 @@ const ProductSlider = ({ title, fetchUrl, afterImages = [] }) => {
             id: p.id,
             handle: p.handle,
             name: p.title,
-            // Use second image if available, else fallback to first or undefined
-            image: p.images[1]?.src || p.images[0]?.src,
+            // Use last image if available, else fallback to first or undefined
+            image: p.images && p.images.length > 0 ? p.images[p.images.length - 1].src : undefined,
             price: price,
             originalPrice: originalPrice,
             discount: discount,
@@ -64,11 +75,21 @@ const ProductSlider = ({ title, fetchUrl, afterImages = [] }) => {
       <div className="slider-header">
         <h2 className="slider-title">{title}</h2>
         <div className="slider-nav">
-          <button className="nav-arrow prev-arrow">&lt;</button>
-          <button className="nav-arrow next-arrow">&gt;</button>
+          <button
+            className="nav-arrow prev-arrow"
+            onClick={() => scrollSlider('left')}
+            type="button"
+            aria-label="Scroll left"
+          >&lt;</button>
+          <button
+            className="nav-arrow next-arrow"
+            onClick={() => scrollSlider('right')}
+            type="button"
+            aria-label="Scroll right"
+          >&gt;</button>
         </div>
       </div>
-      <div className="product-slider-container">
+      <div className="product-slider-container" ref={sliderRef}>
         <div className="product-slider">
           {products.map((product) => (
             <Link to={`/product/${product.handle}`} key={product.id} className="product-card">
@@ -80,8 +101,8 @@ const ProductSlider = ({ title, fetchUrl, afterImages = [] }) => {
                 <span className="original-price">Rs. {product.originalPrice}</span>
                 <span className="discount">{product.discount}</span>
               </div>
-              <button 
-                className="add-to-cart-btn" 
+              <button
+                className="add-to-cart-btn"
                 onClick={(e) => handleAddToCart(e, product)}
                 disabled={isAddingToCart || isInCart(product.id)}
               >
@@ -91,6 +112,7 @@ const ProductSlider = ({ title, fetchUrl, afterImages = [] }) => {
           ))}
         </div>
       </div>
+
       <div className="view-all-container">
         <button
           className="view-all-btn"

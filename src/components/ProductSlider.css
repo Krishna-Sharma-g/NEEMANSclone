@@ -18,35 +18,35 @@
 .slider-nav .nav-arrow {
   width: 40px;
   height: 40px;
-  /* border-radius: 50%; */
-  background-color: #fff;
-  border: 1px solid #ddd;
+  color: #333;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid #bdbdbd;
   cursor: pointer;
   font-size: 20px;
   margin-left: 10px;
 }
 
 .product-slider-container {
-  overflow-x: hidden;
+  overflow-x: auto;
+  scroll-behavior: smooth;
   padding-bottom: 20px;
-}
 
-/* Hide scrollbars for all browsers in product slider */
-.product-slider-container,
-.product-slider {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.product-slider-container::-webkit-scrollbar,
-.product-slider::-webkit-scrollbar {
+
+.product-slider-container::-webkit-scrollbar {
   display: none;
 }
 
 .product-slider {
   display: flex;
   gap: 20px;
+  /* No scroll styles here */
   width: max-content;
 }
+
 
 /* Card style as per your request */
 .product-card {
@@ -68,8 +68,8 @@
 .product-image {
   width: 100%;
   max-width: 100%;
-  height: 260px;
-  object-fit: cover;
+  height: 360px !important;
+  object-fit: cover !important;
   display: block;
   border-radius: 0;
   margin: 0;
@@ -131,7 +131,6 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  margin-top: auto;
 }
 
 .new-badge {
@@ -201,7 +200,7 @@
     height: 370px;
   }
   .product-image {
-    height: 120px;
+    height: 360px !important;
   }
   .card-body {
     padding: 14px;
@@ -222,7 +221,7 @@
     height: 270px;
   }
   .product-image {
-    height: 80px;
+    height: 360px !important;
   }
   .card-body {
     padding: 8px;
@@ -248,9 +247,9 @@
     height: auto;
   }
   .product-image {
-    height: 48vw;
-    min-height: 60px;
-    max-height: 180px;
+    height: 360px !important;
+    min-height: unset;
+    max-height: unset;
   }
   .card-body {
     padding: 6px;
