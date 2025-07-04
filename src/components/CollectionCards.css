@@ -107,9 +107,13 @@
 }
 
 @media (max-width: 1200px) {
+  .collection-section {
+    padding: 60px 0 80px 0;
+  }
   .collection-cards {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
+    max-width: 98vw;
   }
   .collection-card {
     width: 44vw;
@@ -122,24 +126,13 @@
 }
 
 @media (max-width: 900px) {
-  .collection-cards {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+  .collection-section {
+    padding: 40px 0 60px 0;
   }
-  .collection-card {
-    width: 46vw;
-    max-width: 320px;
-  }
-  .collection-card img {
-    height: 32vw;
-    max-height: 320px;
-  }
-}
-
-@media (max-width: 600px) {
   .collection-cards {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 14px;
+    max-width: 98vw;
   }
   .collection-card {
     width: 90vw;
@@ -147,6 +140,26 @@
   }
   .collection-card img {
     height: 40vw;
-    max-height: 200px;
+    max-height: 220px;
+  }
+}
+
+@media (max-width: 600px) {
+  .collection-section {
+    padding: 24px 0 32px 0;
+  }
+  .collection-title {
+    font-size: 1.2rem;
+  }
+  .collection-cards {
+    gap: 10px;
+  }
+  .collection-card {
+    width: 98vw;
+    max-width: 99vw;
+  }
+  .collection-card img {
+    height: 38vw;
+    max-height: 160px;
   }
 }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './Navbar.css';
 import { useCart } from '../context/CartContext';
 import CartSidebar from './CartSidebar';
+import logoimage from '/assets/logoimage.png'; // Adjust the path as necessary
 
 const menuData = {
   MEN: [
@@ -120,6 +121,7 @@ const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const { getCartItemsCount } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Track hover state for nav and mega menu
   const [navHover, setNavHover] = useState(false);
@@ -194,6 +196,16 @@ const Navbar = () => {
     setIsCartOpen(false);
   };
 
+  // Close sidebar on route change or overlay click
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') setSidebarOpen(false);
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [sidebarOpen]);
+
   return (
     <>
       <header className={`header ${isSticky ? 'sticky' : ''} ${!isVisible ? 'hidden' : ''}`}>
@@ -209,11 +221,23 @@ const Navbar = () => {
         </div>
         <div className="main-nav-container">
           <div className="main-nav">
+            {/* Hamburger for mobile */}
+            <button
+              className="hamburger-menu"
+              aria-label="Open menu"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+            {/* Centered logo */}
             <div className="logo">
               <Link to="/">
-                <img src="/assets/logoimage.png" alt="NEEMAN'S" />
+                <img src= {logoimage} alt="NEEMAN'S" />
               </Link>
             </div>
+            {/* Desktop nav links */}
             <nav className="nav-links">
               {navLinks.map((link) => (
                 <div
@@ -234,6 +258,7 @@ const Navbar = () => {
                 </div>
               ))}
             </nav>
+            {/* Cart and nav-actions always at right */}
             <div className="nav-actions">
               <a className="nav-action" href="#">
                 <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -254,12 +279,12 @@ const Navbar = () => {
               </button>
             </div>
           </div>
+          {/* Mega menu for desktop */}
           {activeMenu && menuData[activeMenu] && (
             <div
               className="mega-menu"
               onMouseEnter={() => setMegaMenuHover(true)}
               onMouseLeave={() => setMegaMenuHover(false)}
-              // Always render mega menu if activeMenu is set
               style={{ pointerEvents: 'auto' }}
             >
               <div className="mega-menu-content">
@@ -287,7 +312,6 @@ const Navbar = () => {
                             linkLabel = String(link);
                             linkHandle = String(link).toLowerCase().replace(/\s+/g, '-');
                           }
-                          // Remove debug log
                           return (
                             <li key={linkLabel}>
                               <Link
@@ -307,6 +331,52 @@ const Navbar = () => {
             </div>
           )}
         </div>
+        {/* Sidebar overlay and sidebar */}
+        <div className={`navbar-sidebar-overlay${sidebarOpen ? ' open' : ''}`} onClick={() => setSidebarOpen(false)} />
+        <aside className={`navbar-sidebar${sidebarOpen ? ' open' : ''}`}>
+          <div className="sidebar-header">
+            <button className="sidebar-close" onClick={() => setSidebarOpen(false)}>&times;</button>
+            <div className="sidebar-logo">
+              <Link to="/" onClick={() => setSidebarOpen(false)}>
+                <img src="/assets/logoimage.png" alt="NEEMAN'S" />
+              </Link>
+            </div>
+          </div>
+          <nav className="sidebar-links">
+            {navLinks.map((link) => (
+              <div
+                key={link.label}
+                className="sidebar-nav-item"
+                onClick={() => setSidebarOpen(false)}
+              >
+                {link.to.startsWith('/collections/') ? (
+                  <Link to={link.to}>{link.label}</Link>
+                ) : (
+                  <a href={link.to}>{link.label}</a>
+                )}
+              </div>
+            ))}
+          </nav>
+          <div className="sidebar-actions">
+            <a className="nav-action" href="#">
+              <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              SEARCH
+            </a>
+            <a className="nav-action" href="#">
+              <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21 10.5V21H3v-10.5l9-7 9 7z"/><path d="M9 21V12h6v9"/></svg>
+              FIND STORES
+            </a>
+            <a className="nav-action" href="#">
+              <svg width="22" height="22" fill="none" stroke="#b9976f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M16 16v-1a4 4 0 0 0-8 0v1"/></svg>
+              LOGIN
+            </a>
+            <button onClick={() => { toggleCart(); setSidebarOpen(false); }} className="cart-button nav-action">
+              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              CART
+              <span className="cart-count">{getCartItemsCount()}</span>
+            </button>
+          </div>
+        </aside>
       </header>
       <CartSidebar isOpen={isCartOpen} onClose={closeCart} />
     </>
