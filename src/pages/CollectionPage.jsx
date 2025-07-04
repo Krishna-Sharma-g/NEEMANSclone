@@ -7,10 +7,13 @@ import './CollectionPage.css';
 
 function Collections() {
   const { handle } = useParams();
+  const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [sortBy, setSortBy] = useState('featured');
 
   const title = handle.replace(/-/g, ' ').toUpperCase();
 
@@ -18,18 +21,21 @@ function Collections() {
     threshold: 0,
     triggerOnce: false,
   });
+
   const fetchProductsPage = useCallback(async (pageNum, reset = false) => {
     setLoading(true);
     let url = `https://neemans.com/collections/${handle}/products.json?page=${pageNum}`;
     const res = await axios.get(url);
     let fetched = res.data.products || [];
     setProducts(prev => reset ? fetched : [...prev, ...fetched]);
+    setAllProducts(prev => reset ? fetched : [...prev, ...fetched]);
     setHasMore(fetched.length > 0);
     setLoading(false);
   }, [handle]);
 
   useEffect(() => {
     setProducts([]);
+    setAllProducts([]);
     setPage(1);
     setHasMore(true);
     fetchProductsPage(1, true);
@@ -46,6 +52,7 @@ function Collections() {
       setPage(prev => prev + 1);
     }
   }, [inView, hasMore, loading]);
+
   const genderOptions = ['Men', 'Women'];
   const productTypeOptions = [
     'Clogs', 'Flats', 'Flip Flops', 'Loafers', 'Oxfords', 'Sandals', 'Slides', 'Slip On', 'Sneakers'
@@ -97,12 +104,102 @@ function Collections() {
     setOpenDropdown('');
   };
 
+  useEffect(() => {
+    let filtered = [...allProducts];
+
+    if (selectedFilters.gender) {
+      filtered = filtered.filter(p => 
+        p.tags.some(tag => tag.toLowerCase().includes(selectedFilters.gender.toLowerCase()))
+      );
+    }
+    
+    if (selectedFilters.productType) {
+      filtered = filtered.filter(p => p.product_type === selectedFilters.productType);
+    }
+    
+    if (selectedFilters.collection) {
+      filtered = filtered.filter(p => 
+        p.tags.some(tag => tag.toLowerCase().includes(selectedFilters.collection.toLowerCase()))
+      );
+    }
+    
+    if (selectedFilters.color) {
+      filtered = filtered.filter(p => 
+        p.tags.some(tag => tag.toLowerCase().includes(selectedFilters.color.toLowerCase())) ||
+        p.title.toLowerCase().includes(selectedFilters.color.toLowerCase())
+      );
+    }
+    
+    if (selectedFilters.size) {
+      filtered = filtered.filter(p => 
+        p.variants.some(v => v.title && v.title.includes(selectedFilters.size))
+      );
+    }
+    
+    if (selectedFilters.discount) {
+      filtered = filtered.filter(p => {
+        const variant = p.variants[0];
+        if (!variant) return false;
+        const price = parseFloat(variant.price);
+        const compare = parseFloat(variant.compare_at_price || price);
+        if (!compare || compare <= price) return false;
+        const disc = Math.round(((compare - price) / compare) * 100);
+        return disc >= parseInt(selectedFilters.discount);
+      });
+    }
+
+    setFilteredProducts(filtered);
+  }, [allProducts, selectedFilters]);
+
+  useEffect(() => {
+    let sorted = [...filteredProducts];
+    
+    switch (sortBy) {
+      case 'price-asc':
+        sorted.sort((a, b) => parseFloat(a.variants[0]?.price || 0) - parseFloat(b.variants[0]?.price || 0));
+        break;
+      case 'price-desc':
+        sorted.sort((a, b) => parseFloat(b.variants[0]?.price || 0) - parseFloat(a.variants[0]?.price || 0));
+        break;
+      case 'title-asc':
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'title-desc':
+        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case 'newest':
+        sorted.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        break;
+      default:
+        break;
+    }
+    
+    setProducts(sorted);
+  }, [filteredProducts, sortBy]);
+
+  const resetAllFilters = () => {
+    setSelectedFilters({
+      gender: '',
+      productType: '',
+      collection: '',
+      color: '',
+      size: '',
+      discount: '',
+    });
+    setSortBy('featured');
+  };
+
   return (
     <>
       <Navbar />
       <div className="collection-main">
         <aside className="collection-sidebar" ref={sidebarRef}>
-          {/* <h3>Sort & Filters</h3> -- removed heading */}
+          <div className="sidebar-header">
+            <h3>Filters</h3>
+            <button className="reset-btn" onClick={resetAllFilters}>
+              Clear All
+            </button>
+          </div>
           <div className="filter-group">
             <div className="custom-dropdown-wrap">
               <button
@@ -348,15 +445,19 @@ function Collections() {
         </aside>
         <main className="collection-content">
           <div className="collection-header">
-            <h3 className="collection-title">{title}</h3>
+            <div className="collection-title-section">
+              <h3 className="collection-title">{title}</h3>
+              <p className="results-count">{products.length} products found</p>
+            </div>
             <div className="sort-by">
               <label>Sort by: </label>
-              <select>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
                 <option value="featured">Featured</option>
                 <option value="price-asc">Price: Low to High</option>
                 <option value="price-desc">Price: High to Low</option>
                 <option value="title-asc">Name: A-Z</option>
                 <option value="title-desc">Name: Z-A</option>
+                <option value="newest">Newest First</option>
               </select>
             </div>
           </div>
