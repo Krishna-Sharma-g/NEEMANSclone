@@ -1,7 +1,111 @@
 import React from 'react';
 import './Footer.css';
+import { useNavigate } from 'react-router-dom';
+
+const collectionHandles = {
+  // SHOP BY STYLE
+  'Sports shoes': 'sports-shoes',
+  'Formal shoes': 'formal-shoes',
+  'Walking shoes': 'walking-shoes',
+  'Running shoes': 'running-shoes',
+  'Flats for women': 'flats-for-women',
+  'Casual shoes': 'casual-shoes',
+  'Sneakers shoes': 'sneakers-shoes',
+  'Trending shoes': 'trending-shoes',
+  'Boots shoes': 'boots-shoes',
+  'Leather shoes': 'leather-shoes',
+  'Kurty shoes': 'kurty-shoes',
+  // SIGNATURE COLLECTION
+  'Signature sneakers for men': 'signature-sneakers-for-men',
+  'Slides sneakers': 'slides-sneakers',
+  'Chunky sneakers for men': 'chunky-sneakers-for-men',
+  'Chunky sneakers for women': 'chunky-sneakers-for-women',
+  'Casual sneakers for men': 'casual-sneakers-for-men',
+  'Formal sneakers for men': 'formal-sneakers-for-men',
+  // FLIP FLOPS COLLECTION
+  'Flip flops': 'flip-flops',
+  'Big Recycle for women': 'big-recycle-for-women',
+  'Extra soft flip flops for women': 'extra-soft-flip-flops-for-women',
+  'Big Recycle for men': 'big-recycle-for-men',
+  'Extra soft flip flops for men': 'extra-soft-flip-flops-for-men',
+  'Daily slip flip flops for men': 'daily-slip-flip-flops-for-men',
+  // SHOES COLLECTION
+  'Shoes': 'shoes',
+  'Men': 'men',
+  'Women': 'women',
+  'All products': 'all-products',
+  'Men shoes': 'men-shoes',
+  'Women shoes': 'women-shoes',
+  // LOAFERS AND OXFORDS COLLECTION
+  'Loafers': 'loafers',
+  'Oxfords': 'oxfords',
+  'Formal loafers/oxfords for men': 'formal-loafers-oxfords-for-men',
+  'Leather oxfords for men': 'leather-oxfords-for-men',
+  'Casual loafers/oxfords for men': 'casual-loafers-oxfords-for-men',
+  'Heavy back loafers and oxfords': 'heavy-back-loafers-oxfords',
+  // SLIPPERS COLLECTION
+  'Slippers': 'slippers',
+  'Chappal': 'chappal',
+  'Mens slippers': 'mens-slippers',
+  'Womens slippers': 'womens-slippers',
+  'Stylish slippers for women': 'stylish-slippers-for-women',
+  'Best slippers for women': 'best-slippers-for-women',
+  'Black slippers': 'black-slippers',
+  'White slippers': 'white-slippers',
+  // SANDALS COLLECTION
+  'Sandals': 'sandals',
+  'Sandals for men': 'sandals-for-men',
+  'Extra comfortable for men': 'extra-comfortable-for-men',
+  'Extra comfortable for women': 'extra-comfortable-for-women',
+  'Sandals for women': 'sandals-for-women',
+  'Daily use for men': 'daily-use-for-men',
+  'Girls sandals': 'girls-sandals',
+  'Ladies sandals': 'ladies-sandals',
+  'Trendy sandals for men': 'trendy-sandals-for-men',
+  // SLIP ONS COLLECTION
+  'Slip Ons': 'slip-ons',
+  'Formal slip ons for men': 'formal-slip-ons-for-men',
+  'Slip ons for women': 'slip-ons-for-women',
+  'Casual slip ons for women': 'casual-slip-ons-for-women',
+  'New launched slip ons': 'new-launched-slip-ons',
+  'Walking slip ons for men': 'walking-slip-ons-for-men',
+  'Chunky slip ons for men': 'chunky-slip-ons-for-men',
+  // SLIDES COLLECTION
+  'Slides': 'slides',
+  'Men slides': 'men-slides',
+  'Best slides for men': 'best-slides-for-men',
+  'Best slides for women': 'best-slides-for-women',
+  'Women slides': 'women-slides',
+  // CLOGS COLLECTION
+  'Newly launched Clogs': 'newly-launched-clogs',
+  'Clogs for Men': 'clogs-for-men',
+  'Clogs for Women': 'clogs-for-women',
+  'Outdoor Clogs for Men': 'outdoor-clogs-for-men',
+  'Outdoor Clogs for Women': 'outdoor-clogs-for-women',
+};
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleCollectionClick = (handle) => {
+    if (handle) {
+      navigate(`/collections/${handle}`);
+    }
+  };
+
+  // Helper to render a list with navigation if handle exists
+  const renderList = (items) => (
+    <ul>
+      {items.map((item) => (
+        collectionHandles[item] ? (
+          <li key={item} style={{cursor: 'pointer', color: '#b9976f'}} onClick={() => handleCollectionClick(collectionHandles[item])}>{item}</li>
+        ) : (
+          <li key={item}>{item}</li>
+        )
+      ))}
+    </ul>
+  );
+
   return (
     <footer className="footer-container">
       <div className="footer-top">
@@ -16,148 +120,75 @@ const Footer = () => {
       <div className="footer-links-grid">
         <div>
           <h4>SHOP BY STYLE</h4>
-          <ul>
-            <li>Sports shoes</li>
-            <li>Formal shoes</li>
-            <li>Walking shoes</li>
-            <li>Running shoes</li>
-            <li>Flats for women</li>
-            <li>Casual shoes</li>
-            <li>Sneakers shoes</li>
-            <li>Trending shoes</li>
-            <li>Boots shoes</li>
-            <li>Leather shoes</li>
-            <li>Kurty shoes</li>
-          </ul>
+          {renderList([
+            'Sports shoes', 'Formal shoes', 'Walking shoes', 'Running shoes', 'Flats for women', 'Casual shoes', 'Sneakers shoes', 'Trending shoes', 'Boots shoes', 'Leather shoes', 'Kurty shoes',
+          ])}
         </div>
         <div>
           <h4>INFORMATION</h4>
-          <ul>
-            <li>Track Your Order</li>
-            <li>Contact us</li>
-            <li>Brand Impact</li>
-            <li>Why Neemans?</li>
-            <li>Student Discount</li>
-            <li>Press</li>
-            <li>Bulk Inquiry</li>
-            <li>Blog</li>
-            <li>FAQ</li>
-          </ul>
+          {renderList([
+            'Track Your Order', 'Contact us', 'Brand Impact', 'Why Neemans?', 'Student Discount', 'Press', 'Bulk Inquiry', 'Blog', 'FAQ',
+          ])}
         </div>
         <div>
           <h4>GUIDES</h4>
-          <ul>
-            <li>Schedule a Return / Exchange</li>
-            <li>Size Chart</li>
-            <li>Return Policy</li>
-            <li>Privacy Policy</li>
-            <li>Cookie Policy</li>
-            <li>Terms & Conditions</li>
-          </ul>
+          {renderList([
+            'Schedule a Return / Exchange', 'Size Chart', 'Return Policy', 'Privacy Policy', 'Cookie Policy', 'Terms & Conditions',
+          ])}
         </div>
         <div>
           <h4>SIGNATURE COLLECTION</h4>
-          <ul>
-            <li>Signature sneakers for men</li>
-            <li>Slides sneakers</li>
-            <li>Chunky sneakers for men</li>
-            <li>Chunky sneakers for women</li>
-            <li>Casual sneakers for men</li>
-            <li>Formal sneakers for men</li>
-          </ul>
+          {renderList([
+            'Signature sneakers for men', 'Slides sneakers', 'Chunky sneakers for men', 'Chunky sneakers for women', 'Casual sneakers for men', 'Formal sneakers for men',
+          ])}
         </div>
         <div>
           <h4>FLIP FLOPS COLLECTION</h4>
-          <ul>
-            <li>Flip flops</li>
-            <li>Big Recycle for women</li>
-            <li>Extra soft flip flops for women</li>
-            <li>Big Recycle for men</li>
-            <li>Extra soft flip flops for men</li>
-            <li>Daily slip flip flops for men</li>
-          </ul>
+          {renderList([
+            'Flip flops', 'Big Recycle for women', 'Extra soft flip flops for women', 'Big Recycle for men', 'Extra soft flip flops for men', 'Daily slip flip flops for men',
+          ])}
         </div>
         <div>
           <h4>SHOES COLLECTION</h4>
-          <ul>
-            <li>Shoes</li>
-            <li>Men</li>
-            <li>Women</li>
-            <li>All products</li>
-            <li>Men shoes</li>
-            <li>Women shoes</li>
-          </ul>
+          {renderList([
+            'Shoes', 'Men', 'Women', 'All products', 'Men shoes', 'Women shoes',
+          ])}
         </div>
         <div>
           <h4>LOAFERS AND OXFORDS COLLECTION</h4>
-          <ul>
-            <li>Loafers</li>
-            <li>Oxfords</li>
-            <li>Formal loafers/oxfords for men</li>
-            <li>Leather oxfords for men</li>
-            <li>Casual loafers/oxfords for men</li>
-            <li>Heavy back loafers and oxfords</li>
-          </ul>
+          {renderList([
+            'Loafers', 'Oxfords', 'Formal loafers/oxfords for men', 'Leather oxfords for men', 'Casual loafers/oxfords for men', 'Heavy back loafers and oxfords',
+          ])}
         </div>
         <div>
           <h4>SLIPPERS COLLECTION</h4>
-          <ul>
-            <li>Slippers</li>
-            <li>Chappal</li>
-            <li>Mens slippers</li>
-            <li>Womens slippers</li>
-            <li>Stylish slippers for women</li>
-            <li>Best slippers for women</li>
-            <li>Black slippers</li>
-            <li>White slippers</li>
-          </ul>
+          {renderList([
+            'Slippers', 'Chappal', 'Mens slippers', 'Womens slippers', 'Stylish slippers for women', 'Best slippers for women', 'Black slippers', 'White slippers',
+          ])}
         </div>
         <div>
           <h4>SANDALS COLLECTION</h4>
-          <ul>
-            <li>Sandals</li>
-            <li>Sandals for men</li>
-            <li>Extra comfortable for men</li>
-            <li>Extra comfortable for women</li>
-            <li>Sandals for women</li>
-            <li>Daily use for men</li>
-            <li>Girls sandals</li>
-            <li>Ladies sandals</li>
-            <li>Trendy sandals for men</li>
-          </ul>
+          {renderList([
+            'Sandals', 'Sandals for men', 'Extra comfortable for men', 'Extra comfortable for women', 'Sandals for women', 'Daily use for men', 'Girls sandals', 'Ladies sandals', 'Trendy sandals for men',
+          ])}
         </div>
         <div>
           <h4>SLIP ONS COLLECTION</h4>
-          <ul>
-            <li>Slip Ons</li>
-            <li>Formal slip ons for men</li>
-            <li>Slip ons for women</li>
-            <li>Casual slip ons for women</li>
-            <li>New launched slip ons</li>
-            <li>Walking slip ons for men</li>
-            <li>Slip ons for women</li>
-            <li>Chunky slip ons for men</li>
-          </ul>
+          {renderList([
+            'Slip Ons', 'Formal slip ons for men', 'Slip ons for women', 'Casual slip ons for women', 'New launched slip ons', 'Walking slip ons for men', 'Slip ons for women', 'Chunky slip ons for men',
+          ])}
         </div>
         <div>
           <h4>SLIDES COLLECTION</h4>
-          <ul>
-            <li>Slides</li>
-            <li>Men slides</li>
-            <li>Best slides for men</li>
-            <li>Best slides for women</li>
-            <li>Women slides</li>
-          </ul>
+          {renderList([
+            'Slides', 'Men slides', 'Best slides for men', 'Best slides for women', 'Women slides',
+          ])}
         </div>
         <div>
           <h4>CLOGS COLLECTION</h4>
-          <ul>
-            <li>Newly launched Clogs</li>
-            <li>Clogs for Men</li>
-            <li>Clogs for Women</li>
-            <li>Outdoor Clogs for Men</li>
-            <li>Outdoor Clogs for Women</li>
-          </ul>
+          {renderList([
+            'Newly launched Clogs', 'Clogs for Men', 'Clogs for Women', 'Outdoor Clogs for Men', 'Outdoor Clogs for Women',
+          ])}
         </div>
       </div>
       <div className="footer-bottom">
